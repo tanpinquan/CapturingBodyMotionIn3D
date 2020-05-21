@@ -27,7 +27,7 @@
                             </label>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0YC-Rj-xbP" userLabel="MessageLabel2" customClass="MessageLabel" customModule="BodyDetection" customModuleProvider="target">
                                 <rect key="frame" x="5" y="97" width="404" height="40"/>
-                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="l3Z-Vz-o9a"/>
                                 </constraints>
@@ -35,13 +35,9 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3pe-C6-nsD">
-                                <rect key="frame" x="0.0" y="646" width="414" height="216"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </pickerView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yZN-ex-59u" userLabel="MessageLabel3" customClass="MessageLabel" customModule="BodyDetection" customModuleProvider="target">
                                 <rect key="frame" x="5" y="145" width="404" height="40"/>
-                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Y7N-Kn-S20"/>
                                 </constraints>
@@ -49,18 +45,38 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BAk-a1-hVh">
+                                <rect key="frame" x="5" y="193" width="98" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Mja-oO-Acg"/>
+                                </constraints>
+                                <state key="normal" title="Swap tracking"/>
+                                <connections>
+                                    <action selector="swapTracking:" destination="BYZ-38-t0r" eventType="touchUpInside" id="O3S-HA-sG6"/>
+                                </connections>
+                            </button>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3pe-C6-nsD">
+                                <rect key="frame" x="0.0" y="630" width="453" height="216"/>
+                            </pickerView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="0YC-Rj-xbP" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="12g-M9-zsj"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3pe-C6-nsD" secondAttribute="bottom" constant="16" id="5I3-Eg-U9g"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BAk-a1-hVh" secondAttribute="trailing" symbolic="YES" id="5Kw-dX-Wbb"/>
                             <constraint firstItem="0YC-Rj-xbP" firstAttribute="top" secondItem="g2g-BU-AIQ" secondAttribute="bottom" constant="8" id="6bO-tG-aTa"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0YC-Rj-xbP" secondAttribute="trailing" constant="5" id="DFy-8S-yHJ"/>
+                            <constraint firstItem="BAk-a1-hVh" firstAttribute="top" secondItem="yZN-ex-59u" secondAttribute="bottom" constant="8" id="NQP-bz-OCJ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yZN-ex-59u" secondAttribute="trailing" constant="5" id="PTc-hQ-aeL"/>
                             <constraint firstItem="g2g-BU-AIQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="X4x-SE-jXs"/>
+                            <constraint firstItem="BAk-a1-hVh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="bKq-59-csM"/>
+                            <constraint firstItem="3pe-C6-nsD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fLE-gu-VbU"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="g2g-BU-AIQ" secondAttribute="trailing" constant="5" id="iZf-1h-wiB"/>
                             <constraint firstItem="g2g-BU-AIQ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="5" id="jJJ-bb-OLh"/>
                             <constraint firstItem="yZN-ex-59u" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="kSN-39-XSi"/>
+                            <constraint firstItem="3pe-C6-nsD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="mVc-ht-eCK"/>
                             <constraint firstItem="yZN-ex-59u" firstAttribute="top" secondItem="0YC-Rj-xbP" secondAttribute="bottom" constant="8" id="qho-gB-Nzi"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

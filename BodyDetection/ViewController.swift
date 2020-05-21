@@ -10,7 +10,7 @@ import RealityKit
 import ARKit
 import Combine
 
-class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate, UIPickerViewDataSource, ARSCNViewDelegate {
 
     
 
@@ -20,10 +20,14 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     @IBOutlet weak var messageLabel3: MessageLabel!
     @IBOutlet weak var jointPicker: UIPickerView!
     
+    
     // The 3D character to display.
     var character: BodyTrackedEntity?
-    let characterOffset: SIMD3<Float> = [0.0, 0, 0] // Offset the character by one meter to the left
+    let characterOffset: SIMD3<Float> = [1.0, 0, 0] // Offset the character by one meter to the left
     let characterAnchor = AnchorEntity()
+    
+    let boxEntity = ModelEntity(mesh: MeshResource.generateBox(size: 0.01), materials: [SimpleMaterial(color: .green, isMetallic: true)])
+    let imageDisplayAnchor = AnchorEntity()
     
     // A tracked raycast which is used to place the character accurately
     // in the scene wherever the user taps.
@@ -34,6 +38,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     var pickerData: [[String]] = [[String]]()
     var leftPosIndex: Int = 0
     var rightPosIndex: Int = 0
+    var trackingMode: Int = 0
+    
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -45,19 +52,62 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                       ARSkeletonDefinition.defaultBody3D.jointNames]
         
         arView.session.delegate = self
+
+
+
+
+        //resetImageTracking()
+        resetBodyTracking()
         
+    }
+    
+    func resetImageTracking() {
+        
+        guard let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) else {
+            fatalError("Missing expected asset catalog resources.")
+        }
+        
+        if #available(iOS 12.0, *) {
+            let configuration = ARImageTrackingConfiguration()
+            configuration.trackingImages = referenceImages
+            configuration.maximumNumberOfTrackedImages = 2
+            arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+            arView.scene.addAnchor(imageDisplayAnchor)
+            
+            
+            jointPicker.isHidden = true
+            print("Image tracking enabled")
+
+        } else {
+            // Fallback on earlier versions
+        }
+
+
+    }
+    
+    func resetBodyTracking(){
         // If the iOS device doesn't support body tracking, raise a developer error for
         // this unhandled case.
+        guard let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) else {
+            fatalError("Missing expected asset catalog resources.")
+        }
+        
         guard ARBodyTrackingConfiguration.isSupported else {
             fatalError("This feature is only supported on devices with an A12 chip")
         }
+        jointPicker.isHidden = false
 
         // Run a body tracking configration.
         let configuration = ARBodyTrackingConfiguration()
-        arView.session.run(configuration)
-        
+        configuration.maximumNumberOfTrackedImages = 2
+        configuration.detectionImages = referenceImages
+        configuration.automaticSkeletonScaleEstimationEnabled = true
+        configuration.automaticImageScaleEstimationEnabled = true
+        configuration.isAutoFocusEnabled = true
+        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         arView.scene.addAnchor(characterAnchor)
-        
+        arView.scene.addAnchor(imageDisplayAnchor)
+
         
         // Asynchronously load the 3D character.
         var cancellable: AnyCancellable? = nil
@@ -82,11 +132,40 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             //print(jointTransform)
             print("joint: " + i.description + " " + jointName )
         }
-        
+        print("Body tracking enabled")
+
     }
+    
+    
+    
+//    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+//        guard let imageAnchor = anchor as? ARImageAnchor else { return }
+//        //let referenceImage = imageAnchor.referenceImage
+//        let imagePosition = String(format: ": %.2f,\t%.2f,\t%.2f", imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z)
+//        print((imageAnchor.referenceImage.name ?? "") + imagePosition)
+//
+//
+//    }
+    
     
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
         for anchor in anchors {
+            if let imageAnchor = anchor as? ARImageAnchor {
+                //let referenceImage = imageAnchor.referenceImage
+                let imagePosition = String(format: ": %.2f,\t%.2f,\t%.2f", imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z)
+                print((imageAnchor.referenceImage.name ?? "") + imagePosition)
+                messageLabel.displayMessage("Tracking Images", duration: 5)
+
+                if(imageAnchor.referenceImage.name == "fatburger"){
+                    messageLabel2.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+                }else{
+                    messageLabel3.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+                    imageDisplayAnchor.position = simd_make_float3(imageAnchor.transform.columns.3)
+                    imageDisplayAnchor.orientation = Transform(matrix: imageAnchor.transform).rotation
+                    imageDisplayAnchor.addChild(boxEntity)
+                }
+            }
+            
             guard let bodyAnchor = anchor as? ARBodyAnchor else { continue }
             
             let skeleton = bodyAnchor.skeleton
@@ -99,11 +178,11 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             for(i, _) in jointModelTransforms.enumerated(){
                 //print(jointTransform)
                 let parentIndex = skeleton.definition.parentIndices[ i ]
-                if(skeleton.isJointTracked(i)){
+                if(skeleton.isJointTracked(i)){ 
                    trackedJoints = trackedJoints+1;
                 }else{
                     guard parentIndex != -1 else {continue}
-                    print("joint: " + i.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[i] + "\t parent: " + parentIndex.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[parentIndex] + "\t tracked:" + skeleton.isJointTracked(i).description )
+//                    print("joint: " + i.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[i] + "\t parent: " + parentIndex.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[parentIndex] + "\t tracked:" + skeleton.isJointTracked(i).description )
                 }
 
             }
@@ -172,4 +251,20 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             rightPosIndex = 0
         }
     }
+    
+    // MARK: Actions
+    @IBAction func swapTracking(_ sender: UIButton) {
+        if(trackingMode==0){
+            trackingMode = 1
+            resetImageTracking()
+        }else if(trackingMode==1){
+            trackingMode = 0
+            resetBodyTracking()
+        }
+        
+        print(trackingMode.description)
+    }
+    
+    
+    
 }
