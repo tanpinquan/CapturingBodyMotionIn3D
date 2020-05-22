@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14865.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_5" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="ipad10_2" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14819.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,11 +12,11 @@
             <objects>
                 <viewController id="BYZ-38-t0r" userLabel="ARView" customClass="ViewController" customModule="BodyDetection" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" userLabel="ARView" customClass="ARView" customModule="RealityKit">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1080" height="810"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g2g-BU-AIQ" customClass="MessageLabel" customModule="BodyDetection" customModuleProvider="target">
-                                <rect key="frame" x="5" y="49" width="404" height="40"/>
+                                <rect key="frame" x="5" y="5" width="1070" height="40"/>
                                 <color key="backgroundColor" red="0.69229679405699485" green="0.69229679405699485" blue="0.69229679405699485" alpha="0.88345296963661979" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="PMc-DP-ifd"/>
@@ -26,8 +26,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0YC-Rj-xbP" userLabel="MessageLabel2" customClass="MessageLabel" customModule="BodyDetection" customModuleProvider="target">
-                                <rect key="frame" x="5" y="97" width="404" height="40"/>
-                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="5" y="53" width="1070" height="40"/>
+                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="l3Z-Vz-o9a"/>
                                 </constraints>
@@ -36,8 +36,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yZN-ex-59u" userLabel="MessageLabel3" customClass="MessageLabel" customModule="BodyDetection" customModuleProvider="target">
-                                <rect key="frame" x="5" y="145" width="404" height="40"/>
-                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="5" y="101" width="1070" height="40"/>
+                                <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Y7N-Kn-S20"/>
                                 </constraints>
@@ -45,34 +45,73 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BAk-a1-hVh">
-                                <rect key="frame" x="5" y="193" width="98" height="30"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="53" translatesAutoresizingMaskIntoConstraints="NO" id="6ZW-pz-9WU">
+                                <rect key="frame" x="5" y="149" width="1070" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BAk-a1-hVh">
+                                        <rect key="frame" x="0.0" y="0.0" width="102" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="Mja-oO-Acg"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="ykM-8w-fhH"/>
+                                        </constraints>
+                                        <inset key="contentEdgeInsets" minX="4" minY="1" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="Swap tracking"/>
+                                        <connections>
+                                            <action selector="swapTracking:" destination="BYZ-38-t0r" eventType="touchUpInside" id="O3S-HA-sG6"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bBF-uV-8Go">
+                                        <rect key="frame" x="492" y="0.0" width="80" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="MEQ-eG-3c4"/>
+                                        </constraints>
+                                        <state key="normal" title="Delete Files"/>
+                                        <connections>
+                                            <action selector="deleteFiles:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cfS-V4-M0D"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jhf-mV-Wki">
+                                        <rect key="frame" x="962" y="0.0" width="108" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="dno-BB-fe2"/>
+                                        </constraints>
+                                        <state key="normal" title="Start Recording"/>
+                                        <connections>
+                                            <action selector="toggelRecording:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EbO-tF-p7S"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3pe-C6-nsD">
+                                <rect key="frame" x="0.0" y="578" width="1080" height="216"/>
+                            </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GeL-h8-5Xw">
+                                <rect key="frame" x="990" y="187" width="85" height="30"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="Mja-oO-Acg"/>
-                                </constraints>
-                                <state key="normal" title="Swap tracking"/>
+                                <state key="normal" title="Upload Data"/>
                                 <connections>
-                                    <action selector="swapTracking:" destination="BYZ-38-t0r" eventType="touchUpInside" id="O3S-HA-sG6"/>
+                                    <action selector="uploadData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="stp-ti-IpA"/>
                                 </connections>
                             </button>
-                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3pe-C6-nsD">
-                                <rect key="frame" x="0.0" y="630" width="453" height="216"/>
-                            </pickerView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="0YC-Rj-xbP" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="12g-M9-zsj"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3pe-C6-nsD" secondAttribute="bottom" constant="16" id="5I3-Eg-U9g"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BAk-a1-hVh" secondAttribute="trailing" symbolic="YES" id="5Kw-dX-Wbb"/>
                             <constraint firstItem="0YC-Rj-xbP" firstAttribute="top" secondItem="g2g-BU-AIQ" secondAttribute="bottom" constant="8" id="6bO-tG-aTa"/>
+                            <constraint firstItem="GeL-h8-5Xw" firstAttribute="top" secondItem="6ZW-pz-9WU" secondAttribute="bottom" constant="8" id="ApA-81-EBh"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0YC-Rj-xbP" secondAttribute="trailing" constant="5" id="DFy-8S-yHJ"/>
-                            <constraint firstItem="BAk-a1-hVh" firstAttribute="top" secondItem="yZN-ex-59u" secondAttribute="bottom" constant="8" id="NQP-bz-OCJ"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6ZW-pz-9WU" secondAttribute="trailing" constant="5" id="ErC-oB-5ei"/>
+                            <constraint firstItem="6ZW-pz-9WU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="KhS-1L-f98"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yZN-ex-59u" secondAttribute="trailing" constant="5" id="PTc-hQ-aeL"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="GeL-h8-5Xw" secondAttribute="trailing" constant="5" id="W9J-QU-dgB"/>
                             <constraint firstItem="g2g-BU-AIQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="X4x-SE-jXs"/>
-                            <constraint firstItem="BAk-a1-hVh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="bKq-59-csM"/>
                             <constraint firstItem="3pe-C6-nsD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fLE-gu-VbU"/>
+                            <constraint firstItem="6ZW-pz-9WU" firstAttribute="top" secondItem="yZN-ex-59u" secondAttribute="bottom" constant="8" id="gX4-zb-j58"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="g2g-BU-AIQ" secondAttribute="trailing" constant="5" id="iZf-1h-wiB"/>
                             <constraint firstItem="g2g-BU-AIQ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="5" id="jJJ-bb-OLh"/>
                             <constraint firstItem="yZN-ex-59u" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="kSN-39-XSi"/>
@@ -87,11 +126,12 @@
                         <outlet property="messageLabel" destination="g2g-BU-AIQ" id="e6f-Gb-gss"/>
                         <outlet property="messageLabel2" destination="0YC-Rj-xbP" id="G0F-wu-50K"/>
                         <outlet property="messageLabel3" destination="yZN-ex-59u" id="UbE-k7-e94"/>
+                        <outlet property="toggleRecordButton" destination="jhf-mV-Wki" id="NK9-Ej-FBu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="136.23188405797103" y="133.25892857142856"/>
+            <point key="canvasLocation" x="134.78260869565219" y="132.58928571428572"/>
         </scene>
     </scenes>
 </document>
