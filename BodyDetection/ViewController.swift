@@ -15,16 +15,24 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
 
     @IBOutlet var arView: ARView!
-    @IBOutlet weak var messageLabel: MessageLabel!
-    @IBOutlet weak var messageLabel2: MessageLabel!
-    @IBOutlet weak var messageLabel3: MessageLabel!
+    @IBOutlet weak var jointsLabel: MessageLabel!
+    @IBOutlet weak var leftLabelX: MessageLabel!
+    @IBOutlet weak var leftLabelY: MessageLabel!
+    @IBOutlet weak var leftLabelZ: MessageLabel!
+    @IBOutlet weak var imagesTrackedLabel: MessageLabel!
+    @IBOutlet weak var rightLabelX: MessageLabel!
+    @IBOutlet weak var rightLabelY: MessageLabel!
+    @IBOutlet weak var rightLabelZ: MessageLabel!
+    @IBOutlet weak var fileLabels: UILabel!
+    
+    
     @IBOutlet weak var jointPicker: UIPickerView!
     @IBOutlet weak var toggleRecordButton: UIButton!
     
     
     // The 3D character to display.
     var character: BodyTrackedEntity?
-    let characterOffset: SIMD3<Float> = [1.0, 0, 0] // Offset the character by one meter to the left
+    let characterOffset: SIMD3<Float> = [0.2, 0, 0] // Offset the character by one meter to the left
     let characterAnchor = AnchorEntity()
     
     let boxEntity = ModelEntity(mesh: MeshResource.generateBox(size: 0.01), materials: [SimpleMaterial(color: .green, isMetallic: true)])
@@ -110,9 +118,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         let configuration = ARBodyTrackingConfiguration()
         configuration.maximumNumberOfTrackedImages = 2
         configuration.detectionImages = referenceImages
-        configuration.automaticSkeletonScaleEstimationEnabled = true
+//        configuration.automaticSkeletonScaleEstimationEnabled = true
         configuration.automaticImageScaleEstimationEnabled = true
-        configuration.isAutoFocusEnabled = true
+//        configuration.isAutoFocusEnabled = true
         arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         arView.scene.addAnchor(characterAnchor)
         arView.scene.addAnchor(imageDisplayAnchor)
@@ -130,7 +138,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             }, receiveValue: { (character: Entity) in
                 if let character = character as? BodyTrackedEntity {
                     // Scale the character to human size
-                    character.scale = [1.0, 1.0, 1.0]
+                    character.scale = [0.5, 0.5, 0.5]
                     self.character = character
                     cancellable?.cancel()
                 } else {
@@ -169,15 +177,15 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                 //let referenceImage = imageAnchor.referenceImage
                 let imagePosition = String(format: ": %.2f,\t%.2f,\t%.2f", imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z)
                 print((imageAnchor.referenceImage.name ?? "") + imagePosition)
-                messageLabel.displayMessage("Tracking Images", duration: 5)
+                imagesTrackedLabel.displayMessage("Tracking Images", duration: 1)
 
                 if(imageAnchor.referenceImage.name == "fatburger"){
-                    messageLabel2.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+                    leftLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
                     imageDisplayAnchor.position = simd_make_float3(imageAnchor.transform.columns.3)
                     imageDisplayAnchor.orientation = Transform(matrix: imageAnchor.transform).rotation
                     imageDisplayAnchor.addChild(boxEntity)
                 }else{
-                    messageLabel3.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+                    leftLabelY.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
                     imageDisplayAnchor2.position = simd_make_float3(imageAnchor.transform.columns.3)
                     imageDisplayAnchor2.orientation = Transform(matrix: imageAnchor.transform).rotation
                     imageDisplayAnchor2.addChild(boxEntity2)
@@ -225,10 +233,18 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             
             
             
-            messageLabel.displayMessage("Tracked joints: " + trackedJoints.description, duration: 5)
-            messageLabel2.displayMessage("Model:\t" + leftJointName + leftModelPosition + "\t" + rightJointName + rightModelPosition, duration: 5)
-            messageLabel3.displayMessage("Local:\t" + leftJointName + leftLocalPosition + "\t" + rightJointName + rightLocalPosition, duration: 5)
-                
+            jointsLabel.displayMessage("Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor.description, duration: 1)
+//            leftLabelX.displayMessage("Model:\t" + leftJointName + leftModelPosition + "\t" + rightJointName + rightModelPosition, duration: 5)
+//            leftLabelY.displayMessage("Local:\t" + leftJointName + leftLocalPosition + "\t" + rightJointName + rightLocalPosition, duration: 5)
+            
+            leftLabelX.displayMessage("X: " + leftModelTransform.columns.3.x.description.prefix(5), duration: 1)
+            leftLabelY.displayMessage("Y: " + leftModelTransform.columns.3.y.description.prefix(5), duration: 1)
+            leftLabelZ.displayMessage("Z: " + leftModelTransform.columns.3.z.description.prefix(5), duration: 1)
+
+            rightLabelX.displayMessage("X: " + rightModelTransform.columns.3.x.description.prefix(5), duration: 1)
+            rightLabelY.displayMessage("Y: " + rightModelTransform.columns.3.y.description.prefix(5), duration: 1)
+            rightLabelZ.displayMessage("Z: " + rightModelTransform.columns.3.z.description.prefix(5), duration: 1)
+            
             /// Record data
             let leftShoulderTransform = jointModelTransforms[20]
             let leftElbowTransform = jointModelTransforms[21]
@@ -295,7 +311,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     /// CSV Export Function
     private func createCSV() -> Void {
         var csvString = "shoulder_x, shoulder_y, shoulder_z, elbow_x, elbow_y, elbow_z, wrist_x, wrist_y, wrist_z, thigh_x, thigh_y, thigh_z, knee_x, knee_y, knee_z, ankle_x, ankle_y, ankle_z\n"
-        var numberStr = "0"
+        var numberInt = 0
         bodyPosArr.forEach{data in
             var newLine = data.description
             newLine = newLine.replacingOccurrences(of: "[", with: "")
@@ -311,19 +327,20 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             
             do{
                 let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
-                print(fileURLs)
-                fileURLs.forEach({URL in
-                    if let number = URL.absoluteString.suffix(5).first{
-                        numberStr = String(number)
-                        
-                    }
-                })
+                numberInt = fileURLs.count
+//                fileURLs.forEach({URL in
+//                    if let number = URL.absoluteString.suffix(5).first{
+//                        numberStr = String(number)
+//                        let tempInt = Int(numberStr) ?? 0
+//                        numberInt = max(numberInt,tempInt)
+//                    }
+//                })
 
             }catch{}
             
-            var fileNumber = Int(numberStr) ?? 0
-            fileNumber = fileNumber+1
-            let fileName = pickerData[2][selectedExercise] + "Data" + String(fileNumber) + ".csv"
+//            var fileNumber = Int(numberStr) ?? 0
+//            numberInt = numberInt+1
+            let fileName = pickerData[2][selectedExercise] + "Data" + String(numberInt) + ".csv"
             
             let fileURL = dir.appendingPathComponent(fileName)
 
@@ -407,8 +424,27 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                 
             }
         }
-        
+    }
+    @IBAction func refreshFiles(_ sender: Any) {
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+             print(dir)
+             
+             do{
+                let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
+                print(fileURLs)
+                
+                var fileStr:String = ""
+                
+                fileURLs.forEach({URL in
+                    fileStr += URL.lastPathComponent + ","
 
+                })
+                fileLabels.text = fileStr
+
+             }catch{
+                 
+             }
+         }
         
         
     }
