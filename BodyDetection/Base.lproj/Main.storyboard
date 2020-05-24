@@ -104,7 +104,7 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="53" translatesAutoresizingMaskIntoConstraints="NO" id="6ZW-pz-9WU">
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="6ZW-pz-9WU">
                                 <rect key="frame" x="5" y="116" width="758" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BAk-a1-hVh">
@@ -128,7 +128,7 @@
                                         </constraints>
                                         <state key="normal" title="Delete Files"/>
                                         <connections>
-                                            <action selector="deleteFiles:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cfS-V4-M0D"/>
+                                            <action selector="deleteFilesPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cfS-V4-M0D"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YWV-I0-ZIk">
@@ -136,7 +136,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Refresh Files"/>
                                         <connections>
-                                            <action selector="refreshFiles:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ktw-6f-OyC"/>
+                                            <action selector="refreshFilesPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Bv5-97-4Qd"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jhf-mV-Wki">
@@ -147,7 +147,7 @@
                                         </constraints>
                                         <state key="normal" title="Start Recording"/>
                                         <connections>
-                                            <action selector="toggelRecording:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EbO-tF-p7S"/>
+                                            <action selector="toggleRecording:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EbO-tF-p7S"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -172,7 +172,7 @@
                                         </constraints>
                                         <state key="normal" title="Upload Data"/>
                                         <connections>
-                                            <action selector="uploadData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="stp-ti-IpA"/>
+                                            <action selector="uploadDataPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="stp-ti-IpA"/>
                                         </connections>
                                     </button>
                                 </subviews>

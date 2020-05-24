@@ -75,6 +75,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
         //resetImageTracking()
         resetBodyTracking()
+        refreshFiles()
         
     }
     
@@ -308,54 +309,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         }
     }
     
-    /// CSV Export Function
-    private func createCSV() -> Void {
-        var csvString = "shoulder_x, shoulder_y, shoulder_z, elbow_x, elbow_y, elbow_z, wrist_x, wrist_y, wrist_z, thigh_x, thigh_y, thigh_z, knee_x, knee_y, knee_z, ankle_x, ankle_y, ankle_z\n"
-        var numberInt = 0
-        bodyPosArr.forEach{data in
-            var newLine = data.description
-            newLine = newLine.replacingOccurrences(of: "[", with: "")
-            newLine = newLine.replacingOccurrences(of: "]", with: "")
-            newLine.append("\n")
-//            let newLine = "\(String(describing: data[0])),\(String(describing: data[1])),\(String(describing: data[2]))\n"
-            csvString.append(newLine)
-        }
-        
 
-        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            print(dir)
-            
-            do{
-                let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
-                numberInt = fileURLs.count
-//                fileURLs.forEach({URL in
-//                    if let number = URL.absoluteString.suffix(5).first{
-//                        numberStr = String(number)
-//                        let tempInt = Int(numberStr) ?? 0
-//                        numberInt = max(numberInt,tempInt)
-//                    }
-//                })
-
-            }catch{}
-            
-//            var fileNumber = Int(numberStr) ?? 0
-//            numberInt = numberInt+1
-            let fileName = pickerData[2][selectedExercise] + "Data" + String(numberInt) + ".csv"
-            
-            let fileURL = dir.appendingPathComponent(fileName)
-
-            //writing
-            do {
-                try csvString.write(to: fileURL, atomically: false, encoding: .utf8)
-                print("File created:" + fileName)
-            }
-            catch {/* error handling here */}
-
-        }
-        bodyPosArr = []
-        
-
-    }
     
     
     // MARK: Actions
@@ -371,7 +325,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         print(trackingMode.description)
     }
     
-    @IBAction func toggelRecording(_ sender: UIButton) {
+    @IBAction func toggleRecording(_ sender: UIButton) {
         recording = !recording
         print(recording)
         print(bodyPosArr)
@@ -385,27 +339,11 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     }
     
     
-    @IBAction func deleteFiles(_ sender: UIButton) {
-        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            print(dir)
-            
-            do{
-                let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
-                print(fileURLs)
-                fileURLs.forEach({URL in
-                    print(URL.absoluteString.suffix(5))
-
-                    do{
-                        try FileManager.default.removeItem(at: URL)
-                    }
-                    catch{}
-                })
-
-            }catch{}
-        }
+    @IBAction func deleteFilesPressed(_ sender: UIButton) {
+        deleteFiles()
     }
     
-    @IBAction func uploadData(_ sender: UIButton) {
+    @IBAction func uploadDataPressed(_ sender: UIButton) {
         if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
             print(dir)
             
@@ -425,27 +363,29 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             }
         }
     }
-    @IBAction func refreshFiles(_ sender: Any) {
-        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-             print(dir)
-             
-             do{
-                let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
-                print(fileURLs)
-                
-                var fileStr:String = ""
-                
-                fileURLs.forEach({URL in
-                    fileStr += URL.lastPathComponent + ","
-
-                })
-                fileLabels.text = fileStr
-
-             }catch{
-                 
-             }
-         }
-        
-        
+    
+    @IBAction func refreshFilesPressed(_ sender: UIButton) {
+        refreshFiles()
+//        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+//             print(dir)
+//
+//             do{
+//                let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
+//                print(fileURLs)
+//
+//                var fileStr:String = ""
+//
+//                fileURLs.forEach({URL in
+//                    fileStr += URL.lastPathComponent + ","
+//
+//                })
+//                fileLabels.text = fileStr
+//
+//             }catch{
+//
+//             }
+//         }
     }
+    
+    
 }
