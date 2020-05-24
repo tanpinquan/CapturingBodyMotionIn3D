@@ -1,7 +1,7 @@
 {
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   },
   "resources" : [
     {
@@ -9,6 +9,21 @@
     },
     {
       "filename" : "fatburger.arreferenceimage"
+    },
+    {
+      "filename" : "iphone-4.7.arreferenceimage"
+    },
+    {
+      "filename" : "iphone-5.5.arreferenceimage"
+    },
+    {
+      "filename" : "iphone-x.arreferenceimage"
+    },
+    {
+      "filename" : "meiji1.arreferenceimage"
+    },
+    {
+      "filename" : "meiji2.arreferenceimage"
     },
     {
       "filename" : "mrt_card.arreferenceimage"

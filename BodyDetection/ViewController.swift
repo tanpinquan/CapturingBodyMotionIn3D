@@ -19,7 +19,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     @IBOutlet weak var leftLabelX: MessageLabel!
     @IBOutlet weak var leftLabelY: MessageLabel!
     @IBOutlet weak var leftLabelZ: MessageLabel!
-    @IBOutlet weak var imagesTrackedLabel: MessageLabel!
+    @IBOutlet weak var modeLabel: UILabel!
     @IBOutlet weak var rightLabelX: MessageLabel!
     @IBOutlet weak var rightLabelY: MessageLabel!
     @IBOutlet weak var rightLabelZ: MessageLabel!
@@ -53,6 +53,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
     // Body position array
     var bodyPosArr: [[Float]] = []
+    var imagePosArr: [[Float]] = []
+
     var recording: Bool = false
     var selectedExercise: Int = 0
     
@@ -91,7 +93,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             configuration.maximumNumberOfTrackedImages = 2
             arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
             arView.scene.addAnchor(imageDisplayAnchor)
-            
+            arView.scene.addAnchor(imageDisplayAnchor2)
+
             
             jointPicker.isHidden = true
             print("Image tracking enabled")
@@ -99,8 +102,6 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         } else {
             // Fallback on earlier versions
         }
-
-
     }
     
     func resetBodyTracking(){
@@ -119,9 +120,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         let configuration = ARBodyTrackingConfiguration()
         configuration.maximumNumberOfTrackedImages = 2
         configuration.detectionImages = referenceImages
-//        configuration.automaticSkeletonScaleEstimationEnabled = true
+        configuration.automaticSkeletonScaleEstimationEnabled = true
         configuration.automaticImageScaleEstimationEnabled = true
-//        configuration.isAutoFocusEnabled = true
+        configuration.isAutoFocusEnabled = true
         arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         arView.scene.addAnchor(characterAnchor)
         arView.scene.addAnchor(imageDisplayAnchor)
@@ -160,37 +161,40 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     }
     
     
-    
-//    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-//        guard let imageAnchor = anchor as? ARImageAnchor else { return }
-//        //let referenceImage = imageAnchor.referenceImage
-//        let imagePosition = String(format: ": %.2f,\t%.2f,\t%.2f", imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z)
-//        print((imageAnchor.referenceImage.name ?? "") + imagePosition)
-//
-//
-//    }
+    func resetWorldTracking() {
+        
+        guard let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) else {
+            fatalError("Missing expected asset catalog resources.")
+        }
+        
+        if #available(iOS 12.0, *) {
+            let configuration = ARWorldTrackingConfiguration()
+            configuration.detectionImages = referenceImages
+            configuration.maximumNumberOfTrackedImages = 2
+            configuration.automaticImageScaleEstimationEnabled = true
+            arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+            arView.scene.addAnchor(imageDisplayAnchor)
+            arView.scene.addAnchor(imageDisplayAnchor2)
+            
+            jointPicker.isHidden = true
+            print("Image tracking enabled")
+
+        } else {
+            // Fallback on earlier versions
+        }
+    }
     
     
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+        var imageIndex:Int = 0
+        imagePosArr.append(Array(repeating: 0, count: 6))
+        bodyPosArr.append(Array(repeating: 0, count: 36))
+        
         for anchor in anchors {
             /// Processsing for image detection
             if let imageAnchor = anchor as? ARImageAnchor {
-                //let referenceImage = imageAnchor.referenceImage
-                let imagePosition = String(format: ": %.2f,\t%.2f,\t%.2f", imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z)
-                print((imageAnchor.referenceImage.name ?? "") + imagePosition)
-                imagesTrackedLabel.displayMessage("Tracking Images", duration: 1)
-
-                if(imageAnchor.referenceImage.name == "fatburger"){
-                    leftLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
-                    imageDisplayAnchor.position = simd_make_float3(imageAnchor.transform.columns.3)
-                    imageDisplayAnchor.orientation = Transform(matrix: imageAnchor.transform).rotation
-                    imageDisplayAnchor.addChild(boxEntity)
-                }else{
-                    leftLabelY.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
-                    imageDisplayAnchor2.position = simd_make_float3(imageAnchor.transform.columns.3)
-                    imageDisplayAnchor2.orientation = Transform(matrix: imageAnchor.transform).rotation
-                    imageDisplayAnchor2.addChild(boxEntity2)
-                }
+                imageTrackingProcess(imageAnchor: imageAnchor, imageIndex: imageIndex)
+                imageIndex += 1
             }
             
             /// Processing for body detection
@@ -199,7 +203,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             let skeleton = bodyAnchor.skeleton
             
             let jointModelTransforms = skeleton.jointModelTransforms
-            let jointLocalTransforms = skeleton.jointLocalTransforms
+//            let jointLocalTransforms = skeleton.jointLocalTransforms
 
             var trackedJoints = 0
             /// Count tracked joints
@@ -216,25 +220,16 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             }
             
             /// Display selected joints
-            //let leftFootIndex = ARSkeletonDefinition.defaultBody3D.index(for: .leftFoot)
-            let leftJointName = ARSkeletonDefinition.defaultBody3D.jointNames[leftPosIndex]
             let leftModelTransform = jointModelTransforms[leftPosIndex]
-            let leftModelPosition = String(format: ": %.2f,\t%.2f,\t%.2f", leftModelTransform.columns.3.x, leftModelTransform.columns.3.y, leftModelTransform.columns.3.z)
-            
-            //let rightFootIndex = ARSkeletonDefinition.defaultBody3D.index(for: .rightFoot)
-            let rightJointName = ARSkeletonDefinition.defaultBody3D.jointNames[rightPosIndex]
             let rightModelTransform = jointModelTransforms[rightPosIndex]
-            let rightModelPosition = String(format: ": %.2f,\t%.2f,\t%.2f", rightModelTransform.columns.3.x, rightModelTransform.columns.3.y, rightModelTransform.columns.3.z)
-            
-            let leftLocalTransform = jointLocalTransforms[leftPosIndex]
-            let leftLocalPosition = String(format: ": %.2f,\t%.2f,\t%.2f", leftLocalTransform.columns.3.x, leftLocalTransform.columns.3.y, leftLocalTransform.columns.3.z)
 
-            let rightLocalTransform = jointLocalTransforms[rightPosIndex]
-            let rightLocalPosition = String(format: ": %.2f,\t%.2f,\t%.2f", rightLocalTransform.columns.3.x, rightLocalTransform.columns.3.y, rightLocalTransform.columns.3.z)
+        
             
             
-            
-            jointsLabel.displayMessage("Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor.description, duration: 1)
+            let estimatedHeight = bodyAnchor.estimatedScaleFactor * 1.8
+            let labelString = "Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor.description + ", Height: " + estimatedHeight.description
+//            let labelString = "Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor + ", Height: " + estimatedHeight.description
+            jointsLabel.displayMessage(labelString, duration: 1)
 //            leftLabelX.displayMessage("Model:\t" + leftJointName + leftModelPosition + "\t" + rightJointName + rightModelPosition, duration: 5)
 //            leftLabelY.displayMessage("Local:\t" + leftJointName + leftLocalPosition + "\t" + rightJointName + rightLocalPosition, duration: 5)
             
@@ -255,14 +250,47 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             let leftKneeTransform = jointModelTransforms[3]
             let leftAnkleTransform = jointModelTransforms[4]
             
+            let rightShoulderTransform = jointModelTransforms[64]
+            let rightElbowTransform = jointModelTransforms[65]
+            let rightWristTransform = jointModelTransforms[66]
+
+            let rightThighTransform = jointModelTransforms[7]
+            let rightKneeTransform = jointModelTransforms[8]
+            let rightAnkleTransform = jointModelTransforms[9]
+            
             if(recording){
-                bodyPosArr.append([leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
+                bodyPosArr[bodyPosArr.count-1] = [leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
                                    leftElbowTransform.columns.3.x, leftElbowTransform.columns.3.y, leftElbowTransform.columns.3.z,
                                    leftWristTransform.columns.3.x, leftWristTransform.columns.3.y, leftWristTransform.columns.3.z,
+                                   
+                                   rightShoulderTransform.columns.3.x, rightShoulderTransform.columns.3.y, rightShoulderTransform.columns.3.z,
+                                   rightElbowTransform.columns.3.x, rightElbowTransform.columns.3.y, rightElbowTransform.columns.3.z,
+                                   rightWristTransform.columns.3.x, rightWristTransform.columns.3.y, rightWristTransform.columns.3.z,
+                                   
                                    leftThighTransform.columns.3.x, leftThighTransform.columns.3.y, leftThighTransform.columns.3.z,
                                    leftKneeTransform.columns.3.x, leftKneeTransform.columns.3.y, leftKneeTransform.columns.3.z,
                                    leftAnkleTransform.columns.3.x, leftAnkleTransform.columns.3.y, leftAnkleTransform.columns.3.z,
-                ])
+                                   
+                                   rightThighTransform.columns.3.x, rightThighTransform.columns.3.y, rightThighTransform.columns.3.z,
+                                   rightKneeTransform.columns.3.x, rightKneeTransform.columns.3.y, rightKneeTransform.columns.3.z,
+                                   rightAnkleTransform.columns.3.x, rightAnkleTransform.columns.3.y, rightAnkleTransform.columns.3.z]
+                
+//                bodyPosArr.append([leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
+//                                   leftElbowTransform.columns.3.x, leftElbowTransform.columns.3.y, leftElbowTransform.columns.3.z,
+//                                   leftWristTransform.columns.3.x, leftWristTransform.columns.3.y, leftWristTransform.columns.3.z,
+//
+//                                   rightShoulderTransform.columns.3.x, rightShoulderTransform.columns.3.y, rightShoulderTransform.columns.3.z,
+//                                   rightElbowTransform.columns.3.x, rightElbowTransform.columns.3.y, rightElbowTransform.columns.3.z,
+//                                   rightWristTransform.columns.3.x, rightWristTransform.columns.3.y, rightWristTransform.columns.3.z,
+//
+//                                   leftThighTransform.columns.3.x, leftThighTransform.columns.3.y, leftThighTransform.columns.3.z,
+//                                   leftKneeTransform.columns.3.x, leftKneeTransform.columns.3.y, leftKneeTransform.columns.3.z,
+//                                   leftAnkleTransform.columns.3.x, leftAnkleTransform.columns.3.y, leftAnkleTransform.columns.3.z,
+//
+//                                   rightThighTransform.columns.3.x, rightThighTransform.columns.3.y, rightThighTransform.columns.3.z,
+//                                   rightKneeTransform.columns.3.x, rightKneeTransform.columns.3.y, rightKneeTransform.columns.3.z,
+//                                   rightAnkleTransform.columns.3.x, rightAnkleTransform.columns.3.y, rightAnkleTransform.columns.3.z,
+//                ])
             }
 
             
@@ -317,9 +345,13 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         if(trackingMode==0){
             trackingMode = 1
             resetImageTracking()
+            modeLabel.text = "Image tracking only"
+
         }else if(trackingMode==1){
             trackingMode = 0
-            resetBodyTracking()
+            resetImageTracking()
+            modeLabel.text = "Image and body tracking"
+
         }
         
         print(trackingMode.description)

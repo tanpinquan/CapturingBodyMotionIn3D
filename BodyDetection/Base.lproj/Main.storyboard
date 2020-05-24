@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="ipad9_7" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -63,7 +63,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Gxe-D8-G9J">
                                         <rect key="frame" x="381.5" y="0.0" width="376.5" height="103"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4dI-Is-n6d" userLabel="ImagesLabel" customClass="MessageLabel" customModule="BodyDetection" customModuleProvider="target">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4dI-Is-n6d" userLabel="ImagesLabel">
                                                 <rect key="frame" x="0.0" y="0.0" width="376.5" height="20.5"/>
                                                 <color key="backgroundColor" red="0.6922967941" green="0.6922967941" blue="0.6922967941" alpha="0.88345296959999997" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -199,12 +199,12 @@
                     <connections>
                         <outlet property="arView" destination="8bC-Xf-vdC" id="hvU-Ek-za3"/>
                         <outlet property="fileLabels" destination="klv-6Y-ELx" id="O8c-w9-0Gm"/>
-                        <outlet property="imagesTrackedLabel" destination="4dI-Is-n6d" id="kfE-uS-fde"/>
                         <outlet property="jointPicker" destination="3pe-C6-nsD" id="FoA-1o-uCP"/>
                         <outlet property="jointsLabel" destination="g2g-BU-AIQ" id="e6f-Gb-gss"/>
                         <outlet property="leftLabelX" destination="0YC-Rj-xbP" id="G0F-wu-50K"/>
                         <outlet property="leftLabelY" destination="yZN-ex-59u" id="UbE-k7-e94"/>
                         <outlet property="leftLabelZ" destination="R51-u3-0FG" id="cjP-pH-N29"/>
+                        <outlet property="modeLabel" destination="4dI-Is-n6d" id="kfE-uS-fde"/>
                         <outlet property="rightLabelX" destination="M67-4v-Auf" id="BrE-c2-YvW"/>
                         <outlet property="rightLabelY" destination="N1B-NS-MVd" id="t7U-zx-Glo"/>
                         <outlet property="rightLabelZ" destination="D42-ZY-5i6" id="DIw-eC-GTH"/>
