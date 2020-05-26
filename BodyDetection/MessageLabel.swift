@@ -29,6 +29,8 @@ class MessageLabel: UILabel {
             // Do not hide if showMessage is called again before this block kicks in.
             if self.tag == tag {
                 self.text = "Not Detected"
+                self.backgroundColor = .separator
+
 //                self.isHidden = true
             }
         }

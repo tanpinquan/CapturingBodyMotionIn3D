@@ -15,6 +15,7 @@
 		2F60E1E222631E0F00357E98 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E022631E0F00357E98 /* Main.storyboard */; };
 		2F60E1E422631E0F00357E98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E322631E0F00357E98 /* Assets.xcassets */; };
 		2F60E1E722631E0F00357E98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E522631E0F00357E98 /* LaunchScreen.storyboard */; };
+		30757BC6247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30757BC5247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel */; };
 		309A3E5E2479EA8700D3C37A /* ViewController+Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */; };
 		309A3E602479EB9E00D3C37A /* ViewController+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */; };
 		718E55BC2289F8FF00A9B13B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 718E55BB2289F8FF00A9B13B /* README.md */; };
@@ -31,6 +32,7 @@
 		2F60E1E322631E0F00357E98 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F60E1E622631E0F00357E98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2F60E1EB22631E0F00357E98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30757BC5247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderExerciseClassifier.mlmodel; sourceTree = "<group>"; };
 		309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Track.swift"; sourceTree = "<group>"; };
 		309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Files.swift"; sourceTree = "<group>"; };
 		718E55BB2289F8FF00A9B13B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
@@ -54,6 +56,7 @@
 			children = (
 				718E55BB2289F8FF00A9B13B /* README.md */,
 				2F60E1D922631E0F00357E98 /* BodyDetection */,
+				30757BB8247D30EF003CEE64 /* Models */,
 				2F60E1BB22631DCF00357E98 /* Products */,
 				D37497E0D37497A000000001 /* Configuration */,
 				D34AB110D34AB26000000001 /* LICENSE */,
@@ -84,6 +87,14 @@
 				2F60E1EB22631E0F00357E98 /* Info.plist */,
 			);
 			path = BodyDetection;
+			sourceTree = "<group>";
+		};
+		30757BB8247D30EF003CEE64 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				30757BC5247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		D34AB110D34AB26000000001 /* LICENSE */ = {
@@ -181,6 +192,7 @@
 				309A3E5E2479EA8700D3C37A /* ViewController+Track.swift in Sources */,
 				2F60E1DD22631E0F00357E98 /* ViewController.swift in Sources */,
 				0C0AADE42290B23100E0502A /* MessageLabel.swift in Sources */,
+				30757BC6247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel in Sources */,
 				2F60E1DB22631E0F00357E98 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

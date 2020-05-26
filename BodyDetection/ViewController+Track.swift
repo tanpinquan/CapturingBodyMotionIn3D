@@ -17,15 +17,19 @@ extension ViewController{
         print((imageAnchor.referenceImage.name ?? "") + imagePosition)
 
         if(imageIndex==0){
-            leftLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+            rightLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
             imageDisplayAnchor.position = simd_make_float3(imageAnchor.transform.columns.3)
             imageDisplayAnchor.orientation = Transform(matrix: imageAnchor.transform).rotation
-            imageDisplayAnchor.addChild(boxEntity)
-        }else{
-            rightLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+            imageDisplayAnchor.addChild(planeEntity)
+//            imageDisplayAnchor.addChild(textEntity)
+        }else if(imageIndex==1){
+            rightLabelY.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
             imageDisplayAnchor2.position = simd_make_float3(imageAnchor.transform.columns.3)
             imageDisplayAnchor2.orientation = Transform(matrix: imageAnchor.transform).rotation
-            imageDisplayAnchor2.addChild(boxEntity2)
+            imageDisplayAnchor2.addChild(planeEntity2)
+        }else{
+            rightLabelZ.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+
         }
         
         if(imageAnchor.referenceImage.name == "meiji1"){
