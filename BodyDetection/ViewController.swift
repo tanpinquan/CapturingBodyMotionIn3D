@@ -21,7 +21,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     @IBOutlet weak var leftLabelX: MessageLabel!
     @IBOutlet weak var leftLabelY: MessageLabel!
     @IBOutlet weak var leftLabelZ: MessageLabel!
-    @IBOutlet weak var modeLabel: UILabel!
+    @IBOutlet weak var modeLabel: MessageLabel!
     @IBOutlet weak var rightLabelX: MessageLabel!
     @IBOutlet weak var rightLabelY: MessageLabel!
     @IBOutlet weak var rightLabelZ: MessageLabel!
@@ -34,7 +34,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
     // The 3D character to display.
     var character: BodyTrackedEntity?
-    let characterOffset: SIMD3<Float> = [0.8, 0, 0] // Offset the character by one meter to the left
+    let characterOffset: SIMD3<Float> = [0.5, 0, 0] // Offset the character by one meter to the left
     let characterAnchor = AnchorEntity()
     
     let boxEntity = ModelEntity(mesh: MeshResource.generateBox(size: 0.03), materials: [SimpleMaterial(color: .green, isMetallic: true)])
@@ -73,16 +73,23 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
     var recording: Bool = false
     var selectedExercise: Int = 0
+    var selectedAngle: Float = 0
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         // Picker:
+        var angleArr: [Int] = []
+        for angle in stride(from: -180, to: 180, by: 10) {
+            angleArr.append(angle)
+        }
         self.jointPicker.delegate = self
         self.jointPicker.dataSource = self
         pickerData = [ARSkeletonDefinition.defaultBody3D.jointNames,
-                      ["Knee","Shoulder"]]
+                      ["Knee","Shoulder"],
+                      angleArr.map(String.init)
+        ]
         
         arView.session.delegate = self
         jointPicker.selectRow(19, inComponent: 0, animated: true)
@@ -156,7 +163,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             }, receiveValue: { (character: Entity) in
                 if let character = character as? BodyTrackedEntity {
                     // Scale the character to human size
-                    character.scale = [0.7, 0.7, 0.7]
+                    character.scale = [0.5, 0.5, 0.5]
                     self.character = character
                     cancellable?.cancel()
                 } else {
@@ -337,7 +344,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
     // Picker functions
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 2
+        return 3
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -354,6 +361,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             leftPosIndex = row
         case 1:
             selectedExercise = row
+        case 2:
+            selectedAngle = Float(row*10-180)
         default:
             leftPosIndex = 0
         }
@@ -382,7 +391,6 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     @IBAction func toggleRecording(_ sender: UIButton) {
         recording = !recording
         print(recording)
-        print(bodyPosArr)
         if(!recording){
             toggleRecordButton.setTitle("Start Recording", for: .normal)
             createCSV()
@@ -425,168 +433,421 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
 
     /// Exercise Prediction
+//    struct ModelConstants {
+//        static let predictionWindowSize = 350
+//        static let stateInLength = 400
+//    }
+//
+//
+//    let shoulderExerciseModel = ShoulderExerciseClassifier()
+//
+//    var currentIndexInPredictionWindow = 0
+//
+//    let lShoulderX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lShoulderY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lShoulderZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let lElbowX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lElbowY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lElbowZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let lWristX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lWristY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lWristZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let rShoulderX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rShoulderY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rShoulderZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let rElbowX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rElbowY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rElbowZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let rWristX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rWristY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rWristZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let lThighX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lThighY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lThighZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let lKneeX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lKneeY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lKneeZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let lAnkleX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lAnkleY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let lAnkleZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let rThighX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rThighY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rThighZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let rKneeX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rKneeY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rKneeZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    let rAnkleX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rAnkleY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//    let rAnkleZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    var stateOutput = try! MLMultiArray(shape:[ModelConstants.stateInLength as NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//    func addAccelSampleToDataArray (posSample: [Float]) {
+//        // Add the current accelerometer reading to the data array
+//        lShoulderX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[0] as NSNumber
+//        lShoulderY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[1] as NSNumber
+//        lShoulderZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[2] as NSNumber
+//
+//        lElbowX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[3] as NSNumber
+//        lElbowY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[4] as NSNumber
+//        lElbowZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[5] as NSNumber
+//
+//        lWristX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[6] as NSNumber
+//        lWristY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[7] as NSNumber
+//        lWristZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[8] as NSNumber
+//
+//        rShoulderX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[9] as NSNumber
+//        rShoulderY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[10] as NSNumber
+//        rShoulderZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[11] as NSNumber
+//
+//        rElbowX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[12] as NSNumber
+//        rElbowY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[13] as NSNumber
+//        rElbowZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[14] as NSNumber
+//
+//        rWristX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[15] as NSNumber
+//        rWristY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[16] as NSNumber
+//        rWristZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[17] as NSNumber
+//
+//
+//        lThighX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[18] as NSNumber
+//        lThighY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[19] as NSNumber
+//        lThighZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[20] as NSNumber
+//
+//        lKneeX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[21] as NSNumber
+//        lKneeY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[22] as NSNumber
+//        lKneeZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[23] as NSNumber
+//
+//        lAnkleX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[24] as NSNumber
+//        lAnkleY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[25] as NSNumber
+//        lAnkleZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[26] as NSNumber
+//
+//        rThighX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[27] as NSNumber
+//        rThighY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[28] as NSNumber
+//        rThighZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[29] as NSNumber
+//
+//        rKneeX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[30] as NSNumber
+//        rKneeY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[31] as NSNumber
+//        rKneeZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[32] as NSNumber
+//
+//        rAnkleX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[33] as NSNumber
+//        rAnkleY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[34] as NSNumber
+//        rAnkleZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[35] as NSNumber
+//
+//        // Update the index in the prediction window data array
+//        currentIndexInPredictionWindow += 1
+//
+//        // If the data array is full, call the prediction method to get a new model prediction.
+//        // We assume here for simplicity that the Gyro data was added to the data arrays as well.
+//        if (currentIndexInPredictionWindow == ModelConstants.predictionWindowSize) {
+//            if let predictedActivity = performModelPrediction() {
+//
+//                // Use the predicted activity here
+//                rightLabelX.displayMessage(predictedActivity, duration: 1)
+//                print(predictedActivity)
+//
+//                if(predictedActivity=="shoulder_left"){
+//                    rightLabelX.backgroundColor = .green
+//                }else if(predictedActivity=="shoulder_right"){
+//                    rightLabelX.backgroundColor = .blue
+//                }
+//
+//
+//                // Start a new prediction window
+//                currentIndexInPredictionWindow = 0
+//            }else{
+//                rightLabelX.displayMessage("No Activity", duration: 1)
+//                rightLabelX.backgroundColor = .red
+//                print("No Activity")
+//            }
+//        }
+//    }
+//    func performModelPrediction () -> String? {
+//        // Perform model prediction
+//        let modelPrediction = try! shoulderExerciseModel.prediction(
+//            l_shoulder_x: lShoulderX, l_shoulder_y: lShoulderY, l_shoulder_z: lShoulderZ,
+//            l_elbow_x: lElbowX, l_elbow_y: lElbowY, l_elbow_z: lElbowZ,
+//            l_wrist_x: lWristX, l_wrist_y: lWristY, l_wrist_z: lWristZ,
+//            r_shoulder_x: rShoulderX, r_shoulder_y: rShoulderY, r_shoulder_z: rShoulderZ,
+//            r_elbow_x: rElbowX, r_elbow_y: rElbowY, r_elbow_z: rElbowZ,
+//            r_wrist_x: rWristX, r_wrist_y: rWristY, r_wrist_z: rWristZ,
+//            l_thigh_x: lThighX, l_thigh_y: lThighY, l_thigh_z: lThighZ,
+//            l_knee_x: lKneeX, l_knee_y: lKneeY, l_knee_z: lKneeZ,
+//            l_ankle_x: lAnkleX, l_ankle_y: lAnkleY, l_ankle_z: lAnkleZ,
+//            r_thigh_x: rThighX, r_thigh_y: rThighY, r_thigh_z: rThighZ,
+//            r_knee_x: rKneeX, r_knee_y: rKneeY, r_knee_z: rKneeZ,
+//            r_ankle_x: rAnkleX, r_ankle_y: rAnkleY, r_ankle_z: rAnkleZ,
+//            stateIn: stateOutput)
+//
+//        // Update the state vector
+//        stateOutput = modelPrediction.stateOut
+//
+//        // Return the predicted activity - the activity with the highest probability
+//        return modelPrediction.activity
+//    }
+    
+    
+    
     struct ModelConstants {
         static let predictionWindowSize = 350
         static let stateInLength = 400
+        static let numFeatures = 84
     }
-
-    
-    let shoulderExerciseModel = ShoulderExerciseClassifier()
-    
+    let shoulderAbductionModel = ShoulderAbductionClassifier()
     var currentIndexInPredictionWindow = 0
-
+    
     let lShoulderX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let lShoulderY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let lShoulderZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
+    let lShoulderR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lShoulderP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lShoulderYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    
+    let lArmX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lArmY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lArmZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lArmR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lArmP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lArmYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    
     let lElbowX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let lElbowY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let lElbowZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
+    let lElbowR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lElbowP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lElbowYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    
     let lWristX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let lWristY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let lWristZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lWristR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lWristP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let lWristYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     
     let rShoulderX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let rShoulderY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let rShoulderZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
+    let rShoulderR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rShoulderP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rShoulderYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    
+    let rArmX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rArmY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rArmZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rArmR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rArmP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rArmYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    
     let rElbowX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let rElbowY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let rElbowZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
+    let rElbowR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rElbowP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rElbowYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    
     let rWristX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let rWristY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let rWristZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rWristR = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rWristP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+    let rWristYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
+
+//    var inputArr: [MLMultiArray] = Array(repeating: try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double), count: ModelConstants.numFeatures)
     
-    let lThighX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let lThighY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let lThighZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
-    let lKneeX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let lKneeY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let lKneeZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
-    let lAnkleX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let lAnkleY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let lAnkleZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    
-    let rThighX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let rThighY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let rThighZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
-    let rKneeX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let rKneeY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let rKneeZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
-    let rAnkleX = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let rAnkleY = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-    let rAnkleZ = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
-
     var stateOutput = try! MLMultiArray(shape:[ModelConstants.stateInLength as NSNumber], dataType: MLMultiArrayDataType.double)
+
     
     func addAccelSampleToDataArray (posSample: [Float]) {
-        // Add the current accelerometer reading to the data array
+           // Add the current accelerometer reading to the data array
+        
         lShoulderX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[0] as NSNumber
         lShoulderY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[1] as NSNumber
         lShoulderZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[2] as NSNumber
+        lShoulderR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[3] as NSNumber
+        lShoulderP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[4] as NSNumber
+        lShoulderYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[5] as NSNumber
         
-        lElbowX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[3] as NSNumber
-        lElbowY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[4] as NSNumber
-        lElbowZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[5] as NSNumber
+        lArmX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[6] as NSNumber
+        lArmY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[7] as NSNumber
+        lArmZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[8] as NSNumber
+        lArmR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[9] as NSNumber
+        lArmP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[10] as NSNumber
+        lArmYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[11] as NSNumber
         
-        lWristX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[6] as NSNumber
-        lWristY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[7] as NSNumber
-        lWristZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[8] as NSNumber
+        lElbowX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[12] as NSNumber
+        lElbowY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[13] as NSNumber
+        lElbowZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[14] as NSNumber
+        lElbowR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[15] as NSNumber
+        lElbowP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[16] as NSNumber
+        lElbowYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[17] as NSNumber
         
-        rShoulderX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[9] as NSNumber
-        rShoulderY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[10] as NSNumber
-        rShoulderZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[11] as NSNumber
-        
-        rElbowX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[12] as NSNumber
-        rElbowY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[13] as NSNumber
-        rElbowZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[14] as NSNumber
-        
-        rWristX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[15] as NSNumber
-        rWristY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[16] as NSNumber
-        rWristZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[17] as NSNumber
+        lWristX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[18] as NSNumber
+        lWristY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[19] as NSNumber
+        lWristZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[20] as NSNumber
+        lWristR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[21] as NSNumber
+        lWristP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[22] as NSNumber
+        lWristYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[23] as NSNumber
 
+        rShoulderX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[24] as NSNumber
+        rShoulderY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[25] as NSNumber
+        rShoulderZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[26] as NSNumber
+        rShoulderR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[27] as NSNumber
+        rShoulderP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[28] as NSNumber
+        rShoulderYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[29] as NSNumber
         
-        lThighX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[18] as NSNumber
-        lThighY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[19] as NSNumber
-        lThighZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[20] as NSNumber
+        rArmX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[30] as NSNumber
+        rArmY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[31] as NSNumber
+        rArmZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[32] as NSNumber
+        rArmR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[33] as NSNumber
+        rArmP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[34] as NSNumber
+        rArmYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[35] as NSNumber
         
-        lKneeX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[21] as NSNumber
-        lKneeY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[22] as NSNumber
-        lKneeZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[23] as NSNumber
+        rElbowX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[36] as NSNumber
+        rElbowY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[37] as NSNumber
+        rElbowZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[38] as NSNumber
+        rElbowR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[39] as NSNumber
+        rElbowP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[40] as NSNumber
+        rElbowYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[41] as NSNumber
         
-        lAnkleX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[24] as NSNumber
-        lAnkleY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[25] as NSNumber
-        lAnkleZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[26] as NSNumber
+        rWristX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[42] as NSNumber
+        rWristY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[43] as NSNumber
+        rWristZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[44] as NSNumber
+        rWristR[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[45] as NSNumber
+        rWristP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[46] as NSNumber
+        rWristYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[47] as NSNumber
         
-        rThighX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[27] as NSNumber
-        rThighY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[28] as NSNumber
-        rThighZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[29] as NSNumber
         
-        rKneeX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[30] as NSNumber
-        rKneeY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[31] as NSNumber
-        rKneeZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[32] as NSNumber
-        
-        rAnkleX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[33] as NSNumber
-        rAnkleY[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[34] as NSNumber
-        rAnkleZ[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[35] as NSNumber
-        
-        // Update the index in the prediction window data array
-        currentIndexInPredictionWindow += 1
+//        for (featureIndex, sample) in posSample.enumerated() {
+//            inputArr[featureIndex][[currentIndexInPredictionWindow] as [NSNumber]] = sample as NSNumber
+//            if(featureIndex>0){
+//                print(currentIndexInPredictionWindow, featureIndex, inputArr[featureIndex-1][currentIndexInPredictionWindow], inputArr[featureIndex][currentIndexInPredictionWindow])
+//            }
+//        }
+           
+           
+       // Update the index in the prediction window data array
+       currentIndexInPredictionWindow += 1
 
-        // If the data array is full, call the prediction method to get a new model prediction.
-        // We assume here for simplicity that the Gyro data was added to the data arrays as well.
+           // If the data array is full, call the prediction method to get a new model prediction.
+           // We assume here for simplicity that the Gyro data was added to the data arrays as well.
         if (currentIndexInPredictionWindow == ModelConstants.predictionWindowSize) {
-            if let predictedActivity = performModelPrediction() {
+        
 
-                // Use the predicted activity here
-                rightLabelX.displayMessage(predictedActivity, duration: 1)
-                print(predictedActivity)
+           if let predictedActivity = performModelPrediction() {
 
-                if(predictedActivity=="shoulder_left"){
-                    rightLabelX.backgroundColor = .green
-                }else if(predictedActivity=="shoulder_right"){
-                    rightLabelX.backgroundColor = .blue
-                }
+               // Use the predicted activity here
+               modeLabel.displayMessage(predictedActivity, duration: 1)
+               print(predictedActivity)
+
+               if(predictedActivity=="shoulder_left"){
+                   modeLabel.backgroundColor = .green
+               }else if(predictedActivity=="shoulder_right"){
+                   modeLabel.backgroundColor = .blue
+               }
 
 
-                // Start a new prediction window
-                currentIndexInPredictionWindow = 0
-            }else{
-                rightLabelX.displayMessage("No Activity", duration: 1)
-                rightLabelX.backgroundColor = .red
-                print("No Activity")
-            }
-        }
-    }
-    func performModelPrediction () -> String? {
-        // Perform model prediction
-        let modelPrediction = try! shoulderExerciseModel.prediction(
-            l_shoulder_x: lShoulderX, l_shoulder_y: lShoulderY, l_shoulder_z: lShoulderZ,
-            l_elbow_x: lElbowX, l_elbow_y: lElbowY, l_elbow_z: lElbowZ,
-            l_wrist_x: lWristX, l_wrist_y: lWristY, l_wrist_z: lWristZ,
-            r_shoulder_x: rShoulderX, r_shoulder_y: rShoulderY, r_shoulder_z: rShoulderZ,
-            r_elbow_x: rElbowX, r_elbow_y: rElbowY, r_elbow_z: rElbowZ,
-            r_wrist_x: rWristX, r_wrist_y: rWristY, r_wrist_z: rWristZ,
-            l_thigh_x: lThighX, l_thigh_y: lThighY, l_thigh_z: lThighZ,
-            l_knee_x: lKneeX, l_knee_y: lKneeY, l_knee_z: lKneeZ,
-            l_ankle_x: lAnkleX, l_ankle_y: lAnkleY, l_ankle_z: lAnkleZ,
-            r_thigh_x: rThighX, r_thigh_y: rThighY, r_thigh_z: rThighZ,
-            r_knee_x: rKneeX, r_knee_y: rKneeY, r_knee_z: rKneeZ,
-            r_ankle_x: rAnkleX, r_ankle_y: rAnkleY, r_ankle_z: rAnkleZ,
-            stateIn: stateOutput)
-
-        // Update the state vector
-        stateOutput = modelPrediction.stateOut
-
-        // Return the predicted activity - the activity with the highest probability
-        return modelPrediction.activity
-    }
+               // Start a new prediction window
+               currentIndexInPredictionWindow = 0
+           }else{
+               modeLabel.displayMessage("No Activity", duration: 1)
+               modeLabel.backgroundColor = .red
+               print("No Activity")
+           }
+       }
+   }
     
+   func performModelPrediction () -> String? {
+    print(rArmR)
+    print(lArmR)
     
+       // Perform model prediction
+    let modelPrediction = try!shoulderAbductionModel.prediction(
+        l_shoulder_x: lShoulderX, l_shoulder_y: lShoulderY, l_shoulder_z: lShoulderZ,
+        l_shoulder_r: lShoulderR, l_shoulder_p: lShoulderP, l_shoupder_yaw: lShoulderY,
+        
+        l_arm_x: lArmX, l_arm_y: lArmY, l_arm_z: lArmZ,
+        l_arm_r: lArmR, l_arm_p: lArmP, l_arm_yaw: lArmYaw,
+        
+        l_elbow_x: lElbowX, l_elbow_y: lElbowY, l_elbow_z: lElbowZ,
+        l_elbow_r: lElbowR, l_elbow_p: lElbowP, l_elbow_yaw: lElbowYaw,
+        
+        l_wrist_x: lWristX, l_wrist_y: lWristY, l_wrist_z: lWristZ,
+        l_wrist_r: lWristR, l_wrist_p: lWristP, l_wrist_yaw: lWristYaw,
+        
+        r_shoulder_x: rShoulderX, r_shoulder_y: rShoulderY, r_shoulder_z: rShoulderZ,
+        r_shoulder_r: rShoulderR, r_shoulder_p: rShoulderP, r_shoupder_yaw: rShoulderYaw,
+        
+        r_arm_x: rArmX, r_arm_y: rArmY, r_arm_z: rArmZ,
+        r_arm_r: rArmR, r_arm_p: rArmP, r_arm_yaw: rArmYaw,
+        
+        r_elbow_x: rElbowX, r_elbow_y: rElbowY, r_elbow_z: rElbowZ,
+        r_elbow_r: rElbowR, r_elbow_p: rElbowP, r_elbow_yaw: rElbowYaw,
+        
+        r_wrist_x: rWristX, r_wrist_y: rWristY, r_wrist_z: rWristZ,
+        r_wrist_r: rWristR, r_wrist_p: rWristP, r_wrist_yaw: rWristYaw,
+                
+        stateIn: stateOutput)
+    
+//    let modelPrediction = try!shoulderAbductionModel.prediction(
+//        l_shoulder_x: inputArr[0], l_shoulder_y: inputArr[1], l_shoulder_z: inputArr[2],
+//        l_shoulder_r: inputArr[3], l_shoulder_p: inputArr[4], l_shoupder_yaw: inputArr[5],
+//
+//        l_arm_x: inputArr[6], l_arm_y: inputArr[7], l_arm_z: inputArr[8],
+//        l_arm_r: inputArr[9], l_arm_p: inputArr[10], l_arm_yaw: inputArr[11],
+//
+//        l_elbow_x: inputArr[12], l_elbow_y: inputArr[13], l_elbow_z: inputArr[14],
+//        l_elbow_r: inputArr[15], l_elbow_p: inputArr[16], l_elbow_yaw: inputArr[17],
+//
+//        l_wrist_x: inputArr[18], l_wrist_y: inputArr[19], l_wrist_z: inputArr[20],
+//        l_wrist_r: inputArr[21], l_wrist_p: inputArr[22], l_wrist_yaw: inputArr[23],
+//
+//        r_shoulder_x: inputArr[24], r_shoulder_y: inputArr[25], r_shoulder_z: inputArr[26],
+//        r_shoulder_r: inputArr[27], r_shoulder_p: inputArr[28], r_shoupder_yaw: inputArr[29],
+//
+//        r_arm_x: inputArr[30], r_arm_y: inputArr[31], r_arm_z: inputArr[32],
+//        r_arm_r: inputArr[33], r_arm_p: inputArr[34], r_arm_yaw: inputArr[35],
+//
+//        r_elbow_x: inputArr[36], r_elbow_y: inputArr[37], r_elbow_z: inputArr[38],
+//        r_elbow_r: inputArr[39], r_elbow_p: inputArr[40], r_elbow_yaw: inputArr[41],
+//
+//        r_wrist_x: inputArr[42], r_wrist_y: inputArr[43], r_wrist_z: inputArr[44],
+//        r_wrist_r: inputArr[45], r_wrist_p: inputArr[46], r_wrist_yaw: inputArr[47],
+//
+//        l_thigh_x: inputArr[48], l_thigh_y: inputArr[49], l_thigh_z: inputArr[50],
+//        l_thigh_r: inputArr[51], l_thigh_p: inputArr[52], l_thigh_yaw: inputArr[53],
+//
+//        l_knee_x: inputArr[54], l_knee_y: inputArr[55], l_knee_z: inputArr[56],
+//        l_knee_r: inputArr[57], l_knee_p: inputArr[58], l_knee_yaw: inputArr[59],
+//
+//        l_ankle_x: inputArr[60], l_ankle_y: inputArr[61], l_ankle_z: inputArr[62],
+//        l_ankle_l: inputArr[63], r_ankle_p: inputArr[64], l_ankle_yaw: inputArr[65],
+//
+//        r_thigh_x: inputArr[66], r_thigh_y: inputArr[67], r_thigh_z: inputArr[68],
+//        r_thigh_r: inputArr[69], r_thigh_p: inputArr[70], r_thigh_yaw: inputArr[71],
+//
+//        r_knee_x: inputArr[72], r_knee_y: inputArr[73], r_knee_z: inputArr[74],
+//        r_knee_r: inputArr[75], r_knee_p: inputArr[76], r_knee_yaw: inputArr[77],
+//
+//        r_ankle_x: inputArr[78], r_ankle_y: inputArr[79], r_ankle_z: inputArr[80],
+//        r_ankle_r: inputArr[81], r_ankle_p_1: inputArr[82], r_ankle_yaw: inputArr[83],
+//
+//        stateIn: stateOutput)
+
+       // Update the state vector
+       stateOutput = modelPrediction.stateOut
+
+       // Return the predicted activity - the activity with the highest probability
+       return modelPrediction.activity
+   }
+   
 }

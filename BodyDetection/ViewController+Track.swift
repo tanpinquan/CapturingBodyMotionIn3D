@@ -93,8 +93,7 @@ extension ViewController{
             ) * 180 / .pi
         modeLabel.text = jointAngle.description
         
-//            let dataSample: [Float] = [n.position.x]
-        
+
         /// Record data
         let jointLocalNodesArr: [SCNNode] = Array(repeating: SCNNode(), count: numRecordedJoints)
         let jointModelNodesArr: [SCNNode] = Array(repeating: SCNNode(), count: numRecordedJoints)
@@ -110,51 +109,12 @@ extension ViewController{
             dataSample[arrIndex*6+3] = jointLocalNodesArr[arrIndex].eulerAngles.x
             dataSample[arrIndex*6+4] = jointLocalNodesArr[arrIndex].eulerAngles.y
             dataSample[arrIndex*6+5] = jointLocalNodesArr[arrIndex].eulerAngles.x
-            
-//            print(arrIndex, jointIndex)
-            
+                        
         }
-//        print(dataSample.description)
-        
-        
-        
-        
-        
-//        
-//        let leftShoulderTransform = jointLocalTransforms[20]
-//        let leftElbowTransform = jointLocalTransforms[21]
-//        let leftWristTransform = jointLocalTransforms[22]
-//
-//        let leftThighTransform = jointLocalTransforms[2]
-//        let leftKneeTransform = jointLocalTransforms[3]
-//        let leftAnkleTransform = jointLocalTransforms[4]
-//        
-//        let rightShoulderTransform = jointLocalTransforms[64]
-//        let rightElbowTransform = jointLocalTransforms[65]
-//        let rightWristTransform = jointLocalTransforms[66]
-//
-//        let rightThighTransform = jointLocalTransforms[7]
-//        let rightKneeTransform = jointLocalTransforms[8]
-//        let rightAnkleTransform = jointLocalTransforms[9]
-//        
-//
-//        
-//        let dataSample: [Float] = [leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
-//        leftElbowTransform.columns.3.x, leftElbowTransform.columns.3.y, leftElbowTransform.columns.3.z,
-//        leftWristTransform.columns.3.x, leftWristTransform.columns.3.y, leftWristTransform.columns.3.z,
-//        
-//        rightShoulderTransform.columns.3.x, rightShoulderTransform.columns.3.y, rightShoulderTransform.columns.3.z,
-//        rightElbowTransform.columns.3.x, rightElbowTransform.columns.3.y, rightElbowTransform.columns.3.z,
-//        rightWristTransform.columns.3.x, rightWristTransform.columns.3.y, rightWristTransform.columns.3.z,
-//        
-//        leftThighTransform.columns.3.x, leftThighTransform.columns.3.y, leftThighTransform.columns.3.z,
-//        leftKneeTransform.columns.3.x, leftKneeTransform.columns.3.y, leftKneeTransform.columns.3.z,
-//        leftAnkleTransform.columns.3.x, leftAnkleTransform.columns.3.y, leftAnkleTransform.columns.3.z,
-//        
-//        rightThighTransform.columns.3.x, rightThighTransform.columns.3.y, rightThighTransform.columns.3.z,
-//        rightKneeTransform.columns.3.x, rightKneeTransform.columns.3.y, rightKneeTransform.columns.3.z,
-//        rightAnkleTransform.columns.3.x, rightAnkleTransform.columns.3.y, rightAnkleTransform.columns.3.z]
-        
+        /// Predict
+//        let shoulderPredictor:ShoulderPredictor = ShoulderPredictor()
+//        shoulderPredictor.addAccelSampleToDataArray(posSample: dataSample)
+        addAccelSampleToDataArray(posSample: dataSample)
         if(recording){
             bodyPosArr[bodyPosArr.count-1] = dataSample
         }
@@ -165,8 +125,14 @@ extension ViewController{
         characterAnchor.position = bodyPosition + characterOffset
         // Also copy over the rotation of the body anchor, because the skeleton's pose
         // in the world is relative to the body anchor's rotation.
-        characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
-           
+
+//        characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
+        let quaternion = simd_quatf(angle: degreesToRadians(selectedAngle),
+        axis: simd_float3(x: 0,
+                          y: 1,
+                          z: 0))
+        characterAnchor.orientation = quaternion
+
         if let character = character, character.parent == nil {
             // Attach the character to its anchor as soon as
             // 1. the body anchor was detected and
@@ -182,5 +148,7 @@ extension ViewController{
         return acos(simd_dot(vec1, vec2)/(simd_length(vec1)*simd_length(vec2)))
     }
 
-    
+    func degreesToRadians(_ degrees: Float) -> Float {
+        return degrees * .pi / 180
+    }
 }
