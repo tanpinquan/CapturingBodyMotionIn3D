@@ -35,6 +35,11 @@
 		30757BC5247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderExerciseClassifier.mlmodel; sourceTree = "<group>"; };
 		309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Track.swift"; sourceTree = "<group>"; };
 		309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Files.swift"; sourceTree = "<group>"; };
+		30BC13CB247E30F300B4AD90 /* AR Session 6.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 6.mov"; sourceTree = "<group>"; };
+		30BC13CC247E349600B4AD90 /* AR Session 7.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 7.mov"; sourceTree = "<group>"; };
+		30BC13CE247E49AD00B4AD90 /* AR Session 8.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 8.mov"; sourceTree = "<group>"; };
+		30BC13D0247E4DC100B4AD90 /* AR Session 5.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 5.mov"; sourceTree = "<group>"; };
+		30BC13D1247E9F7B00B4AD90 /* AR Session 9.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 9.mov"; sourceTree = "<group>"; };
 		718E55BB2289F8FF00A9B13B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		D34ABD00D34AB41000000001 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		D3749170D374E6D000000001 /* SampleCode.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
@@ -54,6 +59,11 @@
 		2F60E1B122631DCF00357E98 = {
 			isa = PBXGroup;
 			children = (
+				30BC13D1247E9F7B00B4AD90 /* AR Session 9.mov */,
+				30BC13D0247E4DC100B4AD90 /* AR Session 5.mov */,
+				30BC13CE247E49AD00B4AD90 /* AR Session 8.mov */,
+				30BC13CC247E349600B4AD90 /* AR Session 7.mov */,
+				30BC13CB247E30F300B4AD90 /* AR Session 6.mov */,
 				718E55BB2289F8FF00A9B13B /* README.md */,
 				2F60E1D922631E0F00357E98 /* BodyDetection */,
 				30757BB8247D30EF003CEE64 /* Models */,

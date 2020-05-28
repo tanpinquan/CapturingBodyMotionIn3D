@@ -57,16 +57,37 @@ extension ViewController{
     
         /// CSV Export Function
     func createCSV() -> Void {
-        let leftUpperBodyStr = "l_shoulder_x, l_shoulder_y, l_shoulder_z, l_elbow_x, l_elbow_y, l_elbow_z, l_wrist_x, l_wrist_y, l_wrist_z, "
-        let rightUpperBodyStr = "r_shoulder_x, r_shoulder_y, r_shoulder_z, r_elbow_x, r_elbow_y, r_elbow_z, r_wrist_x, r_wrist_y, r_wrist_z, "
+        let leftShoulderStr = "l_shoulder_x, l_shoulder_y, l_shoulder_z, l_shoulder_r, l_shoulder_p, l_shoupder_yaw, "
+        let leftArmStr = "l_arm_x, l_arm_y, l_arm_z, l_arm_r, l_arm_p, l_arm_yaw, "
+        let leftElbowStr = "l_elbow_x, l_elbow_y, l_elbow_z, l_elbow_r, l_elbow_p, l_elbow_yaw, "
+        let leftWristStr = "l_wrist_x, l_wrist_y, l_wrist_z, l_wrist_r, l_wrist_p, l_wrist_yaw, "
+
+        let rightShoulderStr = "r_shoulder_x, r_shoulder_y, r_shoulder_z, r_shoulder_r, r_shoulder_p, r_shoupder_yaw, "
+        let rightArmStr = "r_arm_x, r_arm_y, r_arm_z, r_arm_r, r_arm_p, r_arm_yaw, "
+        let rightElbowStr = "r_elbow_x, r_elbow_y, r_elbow_z, r_elbow_r, r_elbow_p, r_elbow_yaw, "
+        let rightWristStr = "r_wrist_x, r_wrist_y, r_wrist_z, r_wrist_r, r_wrist_p, r_wrist_yaw, "
+
         
-        let leftlowerBodyStr = "l_thigh_x, l_thigh_y, l_thigh_z, l_knee_x, l_knee_y, l_knee_z, l_ankle_x, l_ankle_y, l_ankle_z, "
-        let rightlowerBodyStr = "r_thigh_x, r_thigh_y, r_thigh_z, r_knee_x, r_knee_y, r_knee_z, r_ankle_x, r_ankle_y, r_ankle_z, "
+        let leftThighStr = "l_thigh_x, l_thigh_y, l_thigh_z, l_thigh_r, l_thigh_p, l_thigh_yaw, "
+        let leftKneeStr = "l_knee_x, l_knee_y, l_knee_z, l_knee_r, l_knee_p, l_knee_yaw, "
+        let leftAnkleStr = "l_ankle_x, l_ankle_y, l_ankle_z, l_ankle_l, r_ankle_p, l_ankle_yaw, "
+        
+        let rightThighStr = "r_thigh_x, r_thigh_y, r_thigh_z, r_thigh_r, r_thigh_p, r_thigh_yaw, "
+        let rightKneeStr = "r_knee_x, r_knee_y, r_knee_z, r_knee_r, r_knee_p, r_knee_yaw, "
+        let rightAnkleStr = "r_ankle_x, r_ankle_y, r_ankle_z, r_ankle_r, r_ankle_p, r_ankle_yaw, "
+
+        
+    
 
         let imageStr0 = "img0_x, img0_y, img0_z, "
         let imageStr1 = "img1_x, img1_y, img1_z\n"
 
-        var bodyCsvString = leftUpperBodyStr + rightUpperBodyStr + leftlowerBodyStr + rightlowerBodyStr + imageStr0 + imageStr1
+        var bodyCsvString = leftShoulderStr + leftArmStr + leftElbowStr + leftWristStr
+        + rightShoulderStr + rightArmStr + rightElbowStr + rightWristStr
+        + leftThighStr + leftKneeStr + leftAnkleStr
+        + rightThighStr + rightKneeStr + rightAnkleStr
+        + imageStr0 + imageStr1
+        
         var numberInt = 0
 //        bodyPosArr.forEach{data in
 //            var newLine = data.description

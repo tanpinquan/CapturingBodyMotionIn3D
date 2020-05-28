@@ -34,7 +34,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
     // The 3D character to display.
     var character: BodyTrackedEntity?
-    let characterOffset: SIMD3<Float> = [0.5, 0, 0] // Offset the character by one meter to the left
+    let characterOffset: SIMD3<Float> = [0.8, 0, 0] // Offset the character by one meter to the left
     let characterAnchor = AnchorEntity()
     
     let boxEntity = ModelEntity(mesh: MeshResource.generateBox(size: 0.03), materials: [SimpleMaterial(color: .green, isMetallic: true)])
@@ -64,6 +64,12 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     // Body position array
     var bodyPosArr: [[Float]] = []
     var imagePosArr: [[Float]] = []
+    var numRecordedJoints: Int = 12
+    let jointIndexArr: [Int] = [19, 20, 21, 22,
+                                63, 64, 65, 66,
+                                2, 3, 4,
+                                7, 8, 9]
+
 
     var recording: Bool = false
     var selectedExercise: Int = 0
@@ -81,12 +87,10 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         arView.session.delegate = self
         jointPicker.selectRow(19, inComponent: 0, animated: true)
 
-
-
-
         //resetImageTracking()
         resetBodyTracking()
         refreshFiles()
+        numRecordedJoints = jointIndexArr.count
         
     }
     
@@ -200,7 +204,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
         var imageIndex:Int = 0
         imagePosArr.append(Array(repeating: 0, count: 6))
-        bodyPosArr.append(Array(repeating: 0, count: 36))
+        bodyPosArr.append(Array(repeating: 0, count: numRecordedJoints*6))
         
         for anchor in anchors {
             /// Processsing for image detection
@@ -211,117 +215,123 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             
             /// Processing for body detection
             guard let bodyAnchor = anchor as? ARBodyAnchor else { continue }
-            
-            let skeleton = bodyAnchor.skeleton
-            
-            let jointModelTransforms = skeleton.jointModelTransforms
+            bodyTrackingProcess(bodyAnchor: bodyAnchor)
+//            let skeleton = bodyAnchor.skeleton
+//
+//            let jointModelTransforms = skeleton.jointModelTransforms
 //            let jointLocalTransforms = skeleton.jointLocalTransforms
-
-            var trackedJoints = 0
-            /// Count tracked joints
-            for(i, _) in jointModelTransforms.enumerated(){
-                //print(jointTransform)
-                let parentIndex = skeleton.definition.parentIndices[ i ]
-                if(skeleton.isJointTracked(i)){ 
-                   trackedJoints = trackedJoints+1;
-                }else{
-                    guard parentIndex != -1 else {continue}
-//                    print("joint: " + i.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[i] + "\t parent: " + parentIndex.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[parentIndex] + "\t tracked:" + skeleton.isJointTracked(i).description )
-                }
-
-            }
-            
-            /// Display selected joints
-            let leftModelTransform = jointModelTransforms[leftPosIndex]
-//            let rightModelTransform = jointModelTransforms[rightPosIndex]
-
-        
-            
-            
-            let estimatedHeight = bodyAnchor.estimatedScaleFactor * 1.8
-            let labelString = "Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor.description + ", Height: " + estimatedHeight.description
-//            let labelString = "Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor + ", Height: " + estimatedHeight.description
-            jointsLabel.displayMessage(labelString, duration: 1)
-//            leftLabelX.displayMessage("Model:\t" + leftJointName + leftModelPosition + "\t" + rightJointName + rightModelPosition, duration: 5)
-//            leftLabelY.displayMessage("Local:\t" + leftJointName + leftLocalPosition + "\t" + rightJointName + rightLocalPosition, duration: 5)
-            
-            leftLabelX.displayMessage("X: " + leftModelTransform.columns.3.x.description.prefix(5), duration: 1)
-            leftLabelY.displayMessage("Y: " + leftModelTransform.columns.3.y.description.prefix(5), duration: 1)
-            leftLabelZ.displayMessage("Z: " + leftModelTransform.columns.3.z.description.prefix(5), duration: 1)
-
-//            rightLabelX.displayMessage("X: " + rightModelTransform.columns.3.x.description.prefix(5), duration: 1)
-//            rightLabelY.displayMessage("Y: " + rightModelTransform.columns.3.y.description.prefix(5), duration: 1)
-//            rightLabelZ.displayMessage("Z: " + rightModelTransform.columns.3.z.description.prefix(5), duration: 1)
-            
-            /// Record data
-            let leftShoulderTransform = jointModelTransforms[20]
-            let leftElbowTransform = jointModelTransforms[21]
-            let leftWristTransform = jointModelTransforms[22]
-
-            let leftThighTransform = jointModelTransforms[2]
-            let leftKneeTransform = jointModelTransforms[3]
-            let leftAnkleTransform = jointModelTransforms[4]
-            
-            let rightShoulderTransform = jointModelTransforms[64]
-            let rightElbowTransform = jointModelTransforms[65]
-            let rightWristTransform = jointModelTransforms[66]
-
-            let rightThighTransform = jointModelTransforms[7]
-            let rightKneeTransform = jointModelTransforms[8]
-            let rightAnkleTransform = jointModelTransforms[9]
-            
-            let dataSample: [Float] = [leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
-            leftElbowTransform.columns.3.x, leftElbowTransform.columns.3.y, leftElbowTransform.columns.3.z,
-            leftWristTransform.columns.3.x, leftWristTransform.columns.3.y, leftWristTransform.columns.3.z,
-            
-            rightShoulderTransform.columns.3.x, rightShoulderTransform.columns.3.y, rightShoulderTransform.columns.3.z,
-            rightElbowTransform.columns.3.x, rightElbowTransform.columns.3.y, rightElbowTransform.columns.3.z,
-            rightWristTransform.columns.3.x, rightWristTransform.columns.3.y, rightWristTransform.columns.3.z,
-            
-            leftThighTransform.columns.3.x, leftThighTransform.columns.3.y, leftThighTransform.columns.3.z,
-            leftKneeTransform.columns.3.x, leftKneeTransform.columns.3.y, leftKneeTransform.columns.3.z,
-            leftAnkleTransform.columns.3.x, leftAnkleTransform.columns.3.y, leftAnkleTransform.columns.3.z,
-            
-            rightThighTransform.columns.3.x, rightThighTransform.columns.3.y, rightThighTransform.columns.3.z,
-            rightKneeTransform.columns.3.x, rightKneeTransform.columns.3.y, rightKneeTransform.columns.3.z,
-            rightAnkleTransform.columns.3.x, rightAnkleTransform.columns.3.y, rightAnkleTransform.columns.3.z]
-            
-            addAccelSampleToDataArray(posSample: dataSample)
-            if(recording){
-                bodyPosArr[bodyPosArr.count-1] = dataSample
-                
-//                bodyPosArr.append([leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
-//                                   leftElbowTransform.columns.3.x, leftElbowTransform.columns.3.y, leftElbowTransform.columns.3.z,
-//                                   leftWristTransform.columns.3.x, leftWristTransform.columns.3.y, leftWristTransform.columns.3.z,
 //
-//                                   rightShoulderTransform.columns.3.x, rightShoulderTransform.columns.3.y, rightShoulderTransform.columns.3.z,
-//                                   rightElbowTransform.columns.3.x, rightElbowTransform.columns.3.y, rightElbowTransform.columns.3.z,
-//                                   rightWristTransform.columns.3.x, rightWristTransform.columns.3.y, rightWristTransform.columns.3.z,
+//            var trackedJoints = 0
+//            /// Count tracked joints
+//            for(i, _) in jointModelTransforms.enumerated(){
+//                //print(jointTransform)
+//                let parentIndex = skeleton.definition.parentIndices[ i ]
+//                if(skeleton.isJointTracked(i)){
+//                   trackedJoints = trackedJoints+1;
+//                }else{
+//                    guard parentIndex != -1 else {continue}
+////                    print("joint: " + i.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[i] + "\t parent: " + parentIndex.description + " " + ARSkeletonDefinition.defaultBody3D.jointNames[parentIndex] + "\t tracked:" + skeleton.isJointTracked(i).description )
+//                }
 //
-//                                   leftThighTransform.columns.3.x, leftThighTransform.columns.3.y, leftThighTransform.columns.3.z,
-//                                   leftKneeTransform.columns.3.x, leftKneeTransform.columns.3.y, leftKneeTransform.columns.3.z,
-//                                   leftAnkleTransform.columns.3.x, leftAnkleTransform.columns.3.y, leftAnkleTransform.columns.3.z,
+//            }
 //
-//                                   rightThighTransform.columns.3.x, rightThighTransform.columns.3.y, rightThighTransform.columns.3.z,
-//                                   rightKneeTransform.columns.3.x, rightKneeTransform.columns.3.y, rightKneeTransform.columns.3.z,
-//                                   rightAnkleTransform.columns.3.x, rightAnkleTransform.columns.3.y, rightAnkleTransform.columns.3.z,
-//                ])
-            }
-
-            
-            // Update the position of the character anchor's position.
-            let bodyPosition = simd_make_float3(bodyAnchor.transform.columns.3)
-            characterAnchor.position = bodyPosition + characterOffset
-            // Also copy over the rotation of the body anchor, because the skeleton's pose
-            // in the world is relative to the body anchor's rotation.
-            characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
-               
-            if let character = character, character.parent == nil {
-                // Attach the character to its anchor as soon as
-                // 1. the body anchor was detected and
-                // 2. the character was loaded.
-                characterAnchor.addChild(character)
-            }
+//            /// Display selected joints
+//            let leftModelTransform = jointLocalTransforms[leftPosIndex]
+//
+//
+//
+//
+//            let estimatedHeight = bodyAnchor.estimatedScaleFactor * 1.8
+//            let labelString = "Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor.description + ", Height: " + estimatedHeight.description
+//
+//            jointsLabel.displayMessage(labelString, duration: 1)
+//
+//            leftLabelX.displayMessage("X: " + leftModelTransform.columns.3.x.description.prefix(5), duration: 1)
+//            leftLabelY.displayMessage("Y: " + leftModelTransform.columns.3.y.description.prefix(5), duration: 1)
+//            leftLabelZ.displayMessage("Z: " + leftModelTransform.columns.3.z.description.prefix(5), duration: 1)
+//
+//
+//            let n = SCNNode()
+//            n.transform = SCNMatrix4(leftModelTransform)
+//
+//
+//            rightLabelX.displayMessage("X: " + n.eulerAngles.x.description.prefix(5), duration: 1)
+//            rightLabelY.displayMessage("Y: " + n.eulerAngles.y.description.prefix(5), duration: 1)
+//            rightLabelZ.displayMessage("Z: " + n.eulerAngles.z.description.prefix(5), duration: 1)
+//
+////            let dataSample: [Float] = [n.position.x]
+//
+//            /// Record data
+//            let leftShoulderTransform = jointLocalTransforms[20]
+//            let leftElbowTransform = jointLocalTransforms[21]
+//            let leftWristTransform = jointLocalTransforms[22]
+//
+//            let leftThighTransform = jointLocalTransforms[2]
+//            let leftKneeTransform = jointLocalTransforms[3]
+//            let leftAnkleTransform = jointLocalTransforms[4]
+//
+//            let rightShoulderTransform = jointLocalTransforms[64]
+//            let rightElbowTransform = jointLocalTransforms[65]
+//            let rightWristTransform = jointLocalTransforms[66]
+//
+//            let rightThighTransform = jointLocalTransforms[7]
+//            let rightKneeTransform = jointLocalTransforms[8]
+//            let rightAnkleTransform = jointLocalTransforms[9]
+//
+//
+//
+//            let dataSample: [Float] = [leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
+//            leftElbowTransform.columns.3.x, leftElbowTransform.columns.3.y, leftElbowTransform.columns.3.z,
+//            leftWristTransform.columns.3.x, leftWristTransform.columns.3.y, leftWristTransform.columns.3.z,
+//
+//            rightShoulderTransform.columns.3.x, rightShoulderTransform.columns.3.y, rightShoulderTransform.columns.3.z,
+//            rightElbowTransform.columns.3.x, rightElbowTransform.columns.3.y, rightElbowTransform.columns.3.z,
+//            rightWristTransform.columns.3.x, rightWristTransform.columns.3.y, rightWristTransform.columns.3.z,
+//
+//            leftThighTransform.columns.3.x, leftThighTransform.columns.3.y, leftThighTransform.columns.3.z,
+//            leftKneeTransform.columns.3.x, leftKneeTransform.columns.3.y, leftKneeTransform.columns.3.z,
+//            leftAnkleTransform.columns.3.x, leftAnkleTransform.columns.3.y, leftAnkleTransform.columns.3.z,
+//
+//            rightThighTransform.columns.3.x, rightThighTransform.columns.3.y, rightThighTransform.columns.3.z,
+//            rightKneeTransform.columns.3.x, rightKneeTransform.columns.3.y, rightKneeTransform.columns.3.z,
+//            rightAnkleTransform.columns.3.x, rightAnkleTransform.columns.3.y, rightAnkleTransform.columns.3.z]
+//
+////            addAccelSampleToDataArray(posSample: dataSample)
+//            if(recording){
+//                bodyPosArr[bodyPosArr.count-1] = dataSample
+//
+////                bodyPosArr.append([leftShoulderTransform.columns.3.x, leftShoulderTransform.columns.3.y, leftShoulderTransform.columns.3.z,
+////                                   leftElbowTransform.columns.3.x, leftElbowTransform.columns.3.y, leftElbowTransform.columns.3.z,
+////                                   leftWristTransform.columns.3.x, leftWristTransform.columns.3.y, leftWristTransform.columns.3.z,
+////
+////                                   rightShoulderTransform.columns.3.x, rightShoulderTransform.columns.3.y, rightShoulderTransform.columns.3.z,
+////                                   rightElbowTransform.columns.3.x, rightElbowTransform.columns.3.y, rightElbowTransform.columns.3.z,
+////                                   rightWristTransform.columns.3.x, rightWristTransform.columns.3.y, rightWristTransform.columns.3.z,
+////
+////                                   leftThighTransform.columns.3.x, leftThighTransform.columns.3.y, leftThighTransform.columns.3.z,
+////                                   leftKneeTransform.columns.3.x, leftKneeTransform.columns.3.y, leftKneeTransform.columns.3.z,
+////                                   leftAnkleTransform.columns.3.x, leftAnkleTransform.columns.3.y, leftAnkleTransform.columns.3.z,
+////
+////                                   rightThighTransform.columns.3.x, rightThighTransform.columns.3.y, rightThighTransform.columns.3.z,
+////                                   rightKneeTransform.columns.3.x, rightKneeTransform.columns.3.y, rightKneeTransform.columns.3.z,
+////                                   rightAnkleTransform.columns.3.x, rightAnkleTransform.columns.3.y, rightAnkleTransform.columns.3.z,
+////                ])
+//            }
+//
+//
+//            // Update the position of the character anchor's position.
+//            let bodyPosition = simd_make_float3(bodyAnchor.transform.columns.3)
+//            characterAnchor.position = bodyPosition + characterOffset
+//            // Also copy over the rotation of the body anchor, because the skeleton's pose
+//            // in the world is relative to the body anchor's rotation.
+//            characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
+//
+//            if let character = character, character.parent == nil {
+//                // Attach the character to its anchor as soon as
+//                // 1. the body anchor was detected and
+//                // 2. the character was loaded.
+//                characterAnchor.addChild(character)
+//            }
         }
     }
     
