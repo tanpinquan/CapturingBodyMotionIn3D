@@ -177,6 +177,12 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Predicted Activity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p8f-YE-aAX" userLabel="PredLabel" customClass="MessageLabel" customModule="BodyDetection" customModuleProvider="target">
+                                <rect key="frame" x="5" y="186" width="758" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
@@ -190,7 +196,10 @@
                             <constraint firstItem="6ZW-pz-9WU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="KhS-1L-f98"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="f6Z-dY-Rka" secondAttribute="trailing" constant="5" id="OlU-Ln-JUM"/>
                             <constraint firstItem="f6Z-dY-Rka" firstAttribute="top" secondItem="6ZW-pz-9WU" secondAttribute="bottom" constant="5" id="SkG-Vu-XBU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="p8f-YE-aAX" secondAttribute="trailing" constant="5" id="TDr-Sf-fBU"/>
+                            <constraint firstItem="p8f-YE-aAX" firstAttribute="top" secondItem="f6Z-dY-Rka" secondAttribute="bottom" constant="5" id="Tur-u8-v0X"/>
                             <constraint firstItem="6ZW-pz-9WU" firstAttribute="top" secondItem="Fku-aa-WHn" secondAttribute="bottom" constant="5" id="Vgp-Vb-Tou"/>
+                            <constraint firstItem="p8f-YE-aAX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="ZZ0-TT-3hQ"/>
                             <constraint firstItem="3pe-C6-nsD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fLE-gu-VbU"/>
                             <constraint firstItem="3pe-C6-nsD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="mVc-ht-eCK"/>
                         </constraints>
@@ -205,6 +214,7 @@
                         <outlet property="leftLabelY" destination="yZN-ex-59u" id="UbE-k7-e94"/>
                         <outlet property="leftLabelZ" destination="R51-u3-0FG" id="cjP-pH-N29"/>
                         <outlet property="modeLabel" destination="4dI-Is-n6d" id="kfE-uS-fde"/>
+                        <outlet property="predLabel" destination="p8f-YE-aAX" id="fVj-9l-vo2"/>
                         <outlet property="rightLabelX" destination="M67-4v-Auf" id="BrE-c2-YvW"/>
                         <outlet property="rightLabelY" destination="N1B-NS-MVd" id="t7U-zx-Glo"/>
                         <outlet property="rightLabelZ" destination="D42-ZY-5i6" id="DIw-eC-GTH"/>
@@ -213,7 +223,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="133.33333333333334" y="131.91964285714286"/>
+            <point key="canvasLocation" x="132.8125" y="131.8359375"/>
         </scene>
     </scenes>
 </document>

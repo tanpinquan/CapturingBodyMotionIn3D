@@ -15,12 +15,10 @@
 		2F60E1E222631E0F00357E98 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E022631E0F00357E98 /* Main.storyboard */; };
 		2F60E1E422631E0F00357E98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E322631E0F00357E98 /* Assets.xcassets */; };
 		2F60E1E722631E0F00357E98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E522631E0F00357E98 /* LaunchScreen.storyboard */; };
-		302EBA98247FA1000012F026 /* ShoulderPredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302EBA97247FA1000012F026 /* ShoulderPredictor.swift */; };
-		302EBA9A247FA2690012F026 /* ViewController+Predict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302EBA99247FA2690012F026 /* ViewController+Predict.swift */; };
-		302EBAA0247FE04C0012F026 /* ShoulderAbductionClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 302EBA9F247FE04C0012F026 /* ShoulderAbductionClassifier.mlmodel */; };
 		30757BC6247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30757BC5247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel */; };
 		309A3E5E2479EA8700D3C37A /* ViewController+Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */; };
 		309A3E602479EB9E00D3C37A /* ViewController+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */; };
+		30B5E86724853A9700D3F700 /* ShoulderAbductionClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30B5E86624853A9700D3F700 /* ShoulderAbductionClassifier.mlmodel */; };
 		718E55BC2289F8FF00A9B13B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 718E55BB2289F8FF00A9B13B /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -35,16 +33,19 @@
 		2F60E1E322631E0F00357E98 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F60E1E622631E0F00357E98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2F60E1EB22631E0F00357E98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		301936F82480839600A4DFE6 /* AR Session 4.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 4.mov"; sourceTree = "<group>"; };
+		301936F9248085B800A4DFE6 /* AR Session 5.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 5.mov"; sourceTree = "<group>"; };
+		301936FC2480C53700A4DFE6 /* AR Session 6.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 6.mov"; sourceTree = "<group>"; };
 		302EBA8F247F6D9A0012F026 /* AR Session 13.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 13.mov"; sourceTree = "<group>"; };
 		302EBA90247F7F730012F026 /* AR Session 1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 1.mov"; sourceTree = "<group>"; };
 		302EBA91247F81250012F026 /* AR Session 2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 2.mov"; sourceTree = "<group>"; };
 		302EBA92247F88830012F026 /* AR Session 3.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 3.mov"; sourceTree = "<group>"; };
-		302EBA97247FA1000012F026 /* ShoulderPredictor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoulderPredictor.swift; sourceTree = "<group>"; };
-		302EBA99247FA2690012F026 /* ViewController+Predict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Predict.swift"; sourceTree = "<group>"; };
-		302EBA9F247FE04C0012F026 /* ShoulderAbductionClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderAbductionClassifier.mlmodel; sourceTree = "<group>"; };
 		30757BC5247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderExerciseClassifier.mlmodel; sourceTree = "<group>"; };
 		309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Track.swift"; sourceTree = "<group>"; };
 		309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Files.swift"; sourceTree = "<group>"; };
+		30B5E85424851AE000D3F700 /* AR Session 7.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 7.mov"; sourceTree = "<group>"; };
+		30B5E85924851C9400D3F700 /* AR Session 8.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 8.mov"; sourceTree = "<group>"; };
+		30B5E86624853A9700D3F700 /* ShoulderAbductionClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderAbductionClassifier.mlmodel; sourceTree = "<group>"; };
 		718E55BB2289F8FF00A9B13B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		D34ABD00D34AB41000000001 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		D3749170D374E6D000000001 /* SampleCode.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
@@ -64,6 +65,11 @@
 		2F60E1B122631DCF00357E98 = {
 			isa = PBXGroup;
 			children = (
+				30B5E85924851C9400D3F700 /* AR Session 8.mov */,
+				30B5E85424851AE000D3F700 /* AR Session 7.mov */,
+				301936FC2480C53700A4DFE6 /* AR Session 6.mov */,
+				301936F9248085B800A4DFE6 /* AR Session 5.mov */,
+				301936F82480839600A4DFE6 /* AR Session 4.mov */,
 				302EBA92247F88830012F026 /* AR Session 3.mov */,
 				302EBA91247F81250012F026 /* AR Session 2.mov */,
 				302EBA90247F7F730012F026 /* AR Session 1.mov */,
@@ -91,9 +97,7 @@
 				2F60E1DA22631E0F00357E98 /* AppDelegate.swift */,
 				2F60E1DC22631E0F00357E98 /* ViewController.swift */,
 				309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */,
-				302EBA99247FA2690012F026 /* ViewController+Predict.swift */,
 				309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */,
-				302EBA97247FA1000012F026 /* ShoulderPredictor.swift */,
 				0C0AADE32290B23100E0502A /* MessageLabel.swift */,
 				0C71C055228FA198003621C4 /* Utilities.swift */,
 				0C8C7867228387D2006A6EE1 /* character */,
@@ -109,7 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				30757BC5247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel */,
-				302EBA9F247FE04C0012F026 /* ShoulderAbductionClassifier.mlmodel */,
+				30B5E86624853A9700D3F700 /* ShoulderAbductionClassifier.mlmodel */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -207,13 +211,11 @@
 				309A3E602479EB9E00D3C37A /* ViewController+Files.swift in Sources */,
 				0C71C056228FA198003621C4 /* Utilities.swift in Sources */,
 				309A3E5E2479EA8700D3C37A /* ViewController+Track.swift in Sources */,
-				302EBAA0247FE04C0012F026 /* ShoulderAbductionClassifier.mlmodel in Sources */,
 				2F60E1DD22631E0F00357E98 /* ViewController.swift in Sources */,
 				0C0AADE42290B23100E0502A /* MessageLabel.swift in Sources */,
 				30757BC6247D521B003CEE64 /* ShoulderExerciseClassifier.mlmodel in Sources */,
 				2F60E1DB22631E0F00357E98 /* AppDelegate.swift in Sources */,
-				302EBA98247FA1000012F026 /* ShoulderPredictor.swift in Sources */,
-				302EBA9A247FA2690012F026 /* ViewController+Predict.swift in Sources */,
+				30B5E86724853A9700D3F700 /* ShoulderAbductionClassifier.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

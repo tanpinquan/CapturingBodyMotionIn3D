@@ -81,19 +81,27 @@ extension ViewController{
         leftLabelY.displayMessage("Y: " + selectedJointModelNode.position.y.description.prefix(5), duration: 1)
         leftLabelZ.displayMessage("Z: " + selectedJointModelNode.position.z.description.prefix(5), duration: 1)
     
-        rightLabelX.displayMessage("R: " + selectedJointLocalNode.eulerAngles.x.description.prefix(5), duration: 1)
-        rightLabelY.displayMessage("P: " + selectedJointLocalNode.eulerAngles.y.description.prefix(5), duration: 1)
-        rightLabelZ.displayMessage("Ymu: " + selectedJointLocalNode.eulerAngles.z.description.prefix(5), duration: 1)
+        rightLabelX.displayMessage("Roll: " + selectedJointLocalNode.eulerAngles.x.description.prefix(5), duration: 1)
+        rightLabelY.displayMessage("Pitch: " + selectedJointLocalNode.eulerAngles.y.description.prefix(5), duration: 1)
+        rightLabelZ.displayMessage("Yaw: " + selectedJointLocalNode.eulerAngles.z.description.prefix(5), duration: 1)
         
-        
-        let jointAngle = computeJointAngle(
+        let lElbowAngle = computeJointAngle(
+            startJointPos: simd_make_float3(jointModelTransforms[20].columns.3),
+            middleJointPos: simd_make_float3(jointModelTransforms[21].columns.3),
+            endJointPos: simd_make_float3(jointModelTransforms[22].columns.3)
+            ) * 180 / .pi
+        let rElbowAngle = computeJointAngle(
             startJointPos: simd_make_float3(jointModelTransforms[64].columns.3),
             middleJointPos: simd_make_float3(jointModelTransforms[65].columns.3),
             endJointPos: simd_make_float3(jointModelTransforms[66].columns.3)
             ) * 180 / .pi
-        modeLabel.text = jointAngle.description
-        
+        modeLabel.text = "L Elbow: " + lElbowAngle.description.prefix(3) + "\t R Elbow: " + rElbowAngle.description.prefix(3)
 
+
+        
+        let jointAngleSample:[Float] = [lElbowAngle, rElbowAngle]
+
+        
         /// Record data
         let jointLocalNodesArr: [SCNNode] = Array(repeating: SCNNode(), count: numRecordedJoints)
         let jointModelNodesArr: [SCNNode] = Array(repeating: SCNNode(), count: numRecordedJoints)
@@ -108,13 +116,11 @@ extension ViewController{
             dataSample[arrIndex*6+2] = jointModelNodesArr[arrIndex].position.z
             dataSample[arrIndex*6+3] = jointLocalNodesArr[arrIndex].eulerAngles.x
             dataSample[arrIndex*6+4] = jointLocalNodesArr[arrIndex].eulerAngles.y
-            dataSample[arrIndex*6+5] = jointLocalNodesArr[arrIndex].eulerAngles.x
+            dataSample[arrIndex*6+5] = jointLocalNodesArr[arrIndex].eulerAngles.z
                         
         }
         /// Predict
-//        let shoulderPredictor:ShoulderPredictor = ShoulderPredictor()
-//        shoulderPredictor.addAccelSampleToDataArray(posSample: dataSample)
-        addAccelSampleToDataArray(posSample: dataSample)
+        addAccelSampleToDataArray(posSample: dataSample, jointAngleSample: jointAngleSample)
         if(recording){
             bodyPosArr[bodyPosArr.count-1] = dataSample
         }

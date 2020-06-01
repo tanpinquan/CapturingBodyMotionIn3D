@@ -26,6 +26,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     @IBOutlet weak var rightLabelY: MessageLabel!
     @IBOutlet weak var rightLabelZ: MessageLabel!
     @IBOutlet weak var fileLabels: UILabel!
+    @IBOutlet var predLabel: MessageLabel!
     
     
     @IBOutlet weak var jointPicker: UIPickerView!
@@ -75,6 +76,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     var selectedExercise: Int = 0
     var selectedAngle: Float = 0
     
+    var latestPreditcion: String = ""
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -93,6 +96,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         
         arView.session.delegate = self
         jointPicker.selectRow(19, inComponent: 0, animated: true)
+        jointPicker.selectRow(18, inComponent: 2, animated: true)
 
         //resetImageTracking()
         resetBodyTracking()
@@ -599,7 +603,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
     
     struct ModelConstants {
-        static let predictionWindowSize = 350
+        static let predictionWindowSize = 100
         static let stateInLength = 400
         static let numFeatures = 84
     }
@@ -662,12 +666,14 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     let rWristP = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
     let rWristYaw = try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double)
 
+    var lElbowAngle:[Float] = Array(repeating: 0.0, count: ModelConstants.predictionWindowSize)
+    var rElbowAngle:[Float] = Array(repeating: 0.0, count: ModelConstants.predictionWindowSize)
 //    var inputArr: [MLMultiArray] = Array(repeating: try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double), count: ModelConstants.numFeatures)
     
     var stateOutput = try! MLMultiArray(shape:[ModelConstants.stateInLength as NSNumber], dataType: MLMultiArrayDataType.double)
 
     
-    func addAccelSampleToDataArray (posSample: [Float]) {
+    func addAccelSampleToDataArray (posSample: [Float], jointAngleSample: [Float]) {
            // Add the current accelerometer reading to the data array
         
         lShoulderX[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[0] as NSNumber
@@ -726,13 +732,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         rWristP[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[46] as NSNumber
         rWristYaw[[currentIndexInPredictionWindow] as [NSNumber]] = posSample[47] as NSNumber
         
+        lElbowAngle[currentIndexInPredictionWindow] = jointAngleSample[0]
+        rElbowAngle[currentIndexInPredictionWindow] = jointAngleSample[1]
         
-//        for (featureIndex, sample) in posSample.enumerated() {
-//            inputArr[featureIndex][[currentIndexInPredictionWindow] as [NSNumber]] = sample as NSNumber
-//            if(featureIndex>0){
-//                print(currentIndexInPredictionWindow, featureIndex, inputArr[featureIndex-1][currentIndexInPredictionWindow], inputArr[featureIndex][currentIndexInPredictionWindow])
-//            }
-//        }
            
            
        // Update the index in the prediction window data array
@@ -741,107 +743,86 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
            // If the data array is full, call the prediction method to get a new model prediction.
            // We assume here for simplicity that the Gyro data was added to the data arrays as well.
         if (currentIndexInPredictionWindow == ModelConstants.predictionWindowSize) {
-        
-
+//            print(rArmR.description)
            if let predictedActivity = performModelPrediction() {
-
+            latestPreditcion = predictedActivity
+            
                // Use the predicted activity here
-               modeLabel.displayMessage(predictedActivity, duration: 1)
-               print(predictedActivity)
+  
+            print(predictedActivity)
+            var labelText:String = ""
 
-               if(predictedActivity=="shoulder_left"){
-                   modeLabel.backgroundColor = .green
-               }else if(predictedActivity=="shoulder_right"){
-                   modeLabel.backgroundColor = .blue
-               }
+            if(predictedActivity.starts(with: "shoulder_left")){
+                let averageElbowAngle = lElbowAngle.reduce(0,+) / Float(ModelConstants.predictionWindowSize)
+                labelText = predictedActivity + ", Elbow Angle: " + averageElbowAngle.description.prefix(3)
+                if averageElbowAngle < 140 {
+                    labelText = labelText + ", STRAIGHTEN ELBOW"
+                }
+                predLabel.backgroundColor = .green
+            }else if(predictedActivity.starts(with: "shoulder_right")){
+                let averageElbowAngle = rElbowAngle.reduce(0,+) / Float(ModelConstants.predictionWindowSize)
+                labelText = predictedActivity + ", Elbow Angle: " + averageElbowAngle.description.prefix(3)
+                if averageElbowAngle < 140 {
+                    labelText = labelText + ", STRAIGHTEN ELBOW"
+                }
+                predLabel.backgroundColor = .blue
+            }else if(predictedActivity=="standing"){
+                labelText = predictedActivity
+                predLabel.backgroundColor = .red
+            }
+            predLabel.text = labelText
 
 
-               // Start a new prediction window
-               currentIndexInPredictionWindow = 0
-           }else{
-               modeLabel.displayMessage("No Activity", duration: 1)
-               modeLabel.backgroundColor = .red
-               print("No Activity")
+            // Start a new prediction window
+            currentIndexInPredictionWindow = 0
            }
        }
    }
     
    func performModelPrediction () -> String? {
-    print(rArmR)
-    print(lArmR)
+//    print(rArmR)
+//    print(lArmR)
     
        // Perform model prediction
     let modelPrediction = try!shoulderAbductionModel.prediction(
-        l_shoulder_x: lShoulderX, l_shoulder_y: lShoulderY, l_shoulder_z: lShoulderZ,
-        l_shoulder_r: lShoulderR, l_shoulder_p: lShoulderP, l_shoupder_yaw: lShoulderY,
+
+        l_arm_r: lArmR, l_arm_p: lArmP,
+        l_elbow_x: lElbowX, l_elbow_y: lElbowY,
+        l_wrist_x: lWristX, l_wrist_y: lWristY,
         
-        l_arm_x: lArmX, l_arm_y: lArmY, l_arm_z: lArmZ,
-        l_arm_r: lArmR, l_arm_p: lArmP, l_arm_yaw: lArmYaw,
-        
-        l_elbow_x: lElbowX, l_elbow_y: lElbowY, l_elbow_z: lElbowZ,
-        l_elbow_r: lElbowR, l_elbow_p: lElbowP, l_elbow_yaw: lElbowYaw,
-        
-        l_wrist_x: lWristX, l_wrist_y: lWristY, l_wrist_z: lWristZ,
-        l_wrist_r: lWristR, l_wrist_p: lWristP, l_wrist_yaw: lWristYaw,
-        
-        r_shoulder_x: rShoulderX, r_shoulder_y: rShoulderY, r_shoulder_z: rShoulderZ,
-        r_shoulder_r: rShoulderR, r_shoulder_p: rShoulderP, r_shoupder_yaw: rShoulderYaw,
-        
-        r_arm_x: rArmX, r_arm_y: rArmY, r_arm_z: rArmZ,
-        r_arm_r: rArmR, r_arm_p: rArmP, r_arm_yaw: rArmYaw,
-        
-        r_elbow_x: rElbowX, r_elbow_y: rElbowY, r_elbow_z: rElbowZ,
-        r_elbow_r: rElbowR, r_elbow_p: rElbowP, r_elbow_yaw: rElbowYaw,
-        
-        r_wrist_x: rWristX, r_wrist_y: rWristY, r_wrist_z: rWristZ,
-        r_wrist_r: rWristR, r_wrist_p: rWristP, r_wrist_yaw: rWristYaw,
+        r_arm_r: rArmR, r_arm_p: rArmP,
+        r_elbow_x: rElbowX, r_elbow_y: rElbowY,
+        r_wrist_x: rWristX, r_wrist_y: rWristY,
                 
         stateIn: stateOutput)
     
 //    let modelPrediction = try!shoulderAbductionModel.prediction(
-//        l_shoulder_x: inputArr[0], l_shoulder_y: inputArr[1], l_shoulder_z: inputArr[2],
-//        l_shoulder_r: inputArr[3], l_shoulder_p: inputArr[4], l_shoupder_yaw: inputArr[5],
+//        l_shoulder_x: lShoulderX, l_shoulder_y: lShoulderY, l_shoulder_z: lShoulderZ,
+//        l_shoulder_r: lShoulderR, l_shoulder_p: lShoulderP, l_shoupder_yaw: lShoulderY,
 //
-//        l_arm_x: inputArr[6], l_arm_y: inputArr[7], l_arm_z: inputArr[8],
-//        l_arm_r: inputArr[9], l_arm_p: inputArr[10], l_arm_yaw: inputArr[11],
+//        l_arm_x: lArmX, l_arm_y: lArmY, l_arm_z: lArmZ,
+//        l_arm_r: lArmR, l_arm_p: lArmP, l_arm_yaw: lArmYaw,
 //
-//        l_elbow_x: inputArr[12], l_elbow_y: inputArr[13], l_elbow_z: inputArr[14],
-//        l_elbow_r: inputArr[15], l_elbow_p: inputArr[16], l_elbow_yaw: inputArr[17],
+//        l_elbow_x: lElbowX, l_elbow_y: lElbowY, l_elbow_z: lElbowZ,
+//        l_elbow_r: lElbowR, l_elbow_p: lElbowP, l_elbow_yaw: lElbowYaw,
 //
-//        l_wrist_x: inputArr[18], l_wrist_y: inputArr[19], l_wrist_z: inputArr[20],
-//        l_wrist_r: inputArr[21], l_wrist_p: inputArr[22], l_wrist_yaw: inputArr[23],
+//        l_wrist_x: lWristX, l_wrist_y: lWristY, l_wrist_z: lWristZ,
+//        l_wrist_r: lWristR, l_wrist_p: lWristP, l_wrist_yaw: lWristYaw,
 //
-//        r_shoulder_x: inputArr[24], r_shoulder_y: inputArr[25], r_shoulder_z: inputArr[26],
-//        r_shoulder_r: inputArr[27], r_shoulder_p: inputArr[28], r_shoupder_yaw: inputArr[29],
+//        r_shoulder_x: rShoulderX, r_shoulder_y: rShoulderY, r_shoulder_z: rShoulderZ,
+//        r_shoulder_r: rShoulderR, r_shoulder_p: rShoulderP, r_shoupder_yaw: rShoulderYaw,
 //
-//        r_arm_x: inputArr[30], r_arm_y: inputArr[31], r_arm_z: inputArr[32],
-//        r_arm_r: inputArr[33], r_arm_p: inputArr[34], r_arm_yaw: inputArr[35],
+//        r_arm_x: rArmX, r_arm_y: rArmY, r_arm_z: rArmZ,
+//        r_arm_r: rArmR, r_arm_p: rArmP, r_arm_yaw: rArmYaw,
 //
-//        r_elbow_x: inputArr[36], r_elbow_y: inputArr[37], r_elbow_z: inputArr[38],
-//        r_elbow_r: inputArr[39], r_elbow_p: inputArr[40], r_elbow_yaw: inputArr[41],
+//        r_elbow_x: rElbowX, r_elbow_y: rElbowY, r_elbow_z: rElbowZ,
+//        r_elbow_r: rElbowR, r_elbow_p: rElbowP, r_elbow_yaw: rElbowYaw,
 //
-//        r_wrist_x: inputArr[42], r_wrist_y: inputArr[43], r_wrist_z: inputArr[44],
-//        r_wrist_r: inputArr[45], r_wrist_p: inputArr[46], r_wrist_yaw: inputArr[47],
-//
-//        l_thigh_x: inputArr[48], l_thigh_y: inputArr[49], l_thigh_z: inputArr[50],
-//        l_thigh_r: inputArr[51], l_thigh_p: inputArr[52], l_thigh_yaw: inputArr[53],
-//
-//        l_knee_x: inputArr[54], l_knee_y: inputArr[55], l_knee_z: inputArr[56],
-//        l_knee_r: inputArr[57], l_knee_p: inputArr[58], l_knee_yaw: inputArr[59],
-//
-//        l_ankle_x: inputArr[60], l_ankle_y: inputArr[61], l_ankle_z: inputArr[62],
-//        l_ankle_l: inputArr[63], r_ankle_p: inputArr[64], l_ankle_yaw: inputArr[65],
-//
-//        r_thigh_x: inputArr[66], r_thigh_y: inputArr[67], r_thigh_z: inputArr[68],
-//        r_thigh_r: inputArr[69], r_thigh_p: inputArr[70], r_thigh_yaw: inputArr[71],
-//
-//        r_knee_x: inputArr[72], r_knee_y: inputArr[73], r_knee_z: inputArr[74],
-//        r_knee_r: inputArr[75], r_knee_p: inputArr[76], r_knee_yaw: inputArr[77],
-//
-//        r_ankle_x: inputArr[78], r_ankle_y: inputArr[79], r_ankle_z: inputArr[80],
-//        r_ankle_r: inputArr[81], r_ankle_p_1: inputArr[82], r_ankle_yaw: inputArr[83],
+//        r_wrist_x: rWristX, r_wrist_y: rWristY, r_wrist_z: rWristZ,
+//        r_wrist_r: rWristR, r_wrist_p: rWristP, r_wrist_yaw: rWristYaw,
 //
 //        stateIn: stateOutput)
+//
 
        // Update the state vector
        stateOutput = modelPrediction.stateOut
