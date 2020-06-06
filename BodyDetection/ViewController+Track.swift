@@ -43,7 +43,7 @@ extension ViewController{
     }
     
     func bodyTrackingProcess(bodyAnchor:ARBodyAnchor) -> Void {
-        
+
         let skeleton = bodyAnchor.skeleton
                     
         let jointModelTransforms = skeleton.jointModelTransforms
@@ -81,9 +81,9 @@ extension ViewController{
         leftLabelY.displayMessage("Y: " + selectedJointModelNode.position.y.description.prefix(5), duration: 1)
         leftLabelZ.displayMessage("Z: " + selectedJointModelNode.position.z.description.prefix(5), duration: 1)
     
-        rightLabelX.displayMessage("Roll: " + selectedJointLocalNode.eulerAngles.x.description.prefix(5), duration: 1)
-        rightLabelY.displayMessage("Pitch: " + selectedJointLocalNode.eulerAngles.y.description.prefix(5), duration: 1)
-        rightLabelZ.displayMessage("Yaw: " + selectedJointLocalNode.eulerAngles.z.description.prefix(5), duration: 1)
+        rightLabelX.displayMessage("Roll: " + radiansToDegrees(selectedJointLocalNode.eulerAngles.x).description.prefix(5), duration: 1)
+        rightLabelY.displayMessage("Pitch: " + radiansToDegrees(selectedJointLocalNode.eulerAngles.y).description.prefix(5), duration: 1)
+        rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(selectedJointLocalNode.eulerAngles.z).description.prefix(5), duration: 1)
         
         let lElbowAngle = computeJointAngle(
             startJointPos: simd_make_float3(jointModelTransforms[20].columns.3),
@@ -95,11 +95,39 @@ extension ViewController{
             middleJointPos: simd_make_float3(jointModelTransforms[65].columns.3),
             endJointPos: simd_make_float3(jointModelTransforms[66].columns.3)
             ) * 180 / .pi
-        modeLabel.text = "L Elbow: " + lElbowAngle.description.prefix(3) + "\t R Elbow: " + rElbowAngle.description.prefix(3)
+        
+        
+        var leftAngleSign = -1
+        if(jointModelTransforms[21].columns.3.y - jointModelTransforms[20].columns.3.y>0){
+            leftAngleSign = 1
+        }
+        var rightAngleSign = -1
+        if(jointModelTransforms[65].columns.3.y - jointModelTransforms[64].columns.3.y>0){
+            rightAngleSign = 1
+        }
+//        let rightAngleSign = (jointModelTransforms[65].columns.3.y - jointModelTransforms[64].columns.3.y).sign.rawValue
+
+        
+        let lShoulderAngle = computeJointAngle(
+            startJointPos: simd_make_float3(jointModelTransforms[19].columns.3),
+            middleJointPos: simd_make_float3(jointModelTransforms[20].columns.3),
+            endJointPos: simd_make_float3(jointModelTransforms[21].columns.3)
+            ) * 180 / .pi * Float(leftAngleSign)
+        let rShoulderAngle = computeJointAngle(
+            startJointPos: simd_make_float3(jointModelTransforms[63].columns.3),
+            middleJointPos: simd_make_float3(jointModelTransforms[64].columns.3),
+            endJointPos: simd_make_float3(jointModelTransforms[65].columns.3)
+            ) * 180 / .pi * Float(rightAngleSign)
+        
+        if(latestPreditcion.starts(with: "shoulder_left")){
+            modeLabel.text = "L Shoulder: " + lShoulderAngle.description.prefix(4) + "\t L Elbow: " + lElbowAngle.description.prefix(3)
+        }else if(latestPreditcion.starts(with: "shoulder_right")){
+            modeLabel.text = "R Shoulder: " + rShoulderAngle.description.prefix(4) + "\t R Elbow: " + rElbowAngle.description.prefix(3)
+        }
 
 
         
-        let jointAngleSample:[Float] = [lElbowAngle, rElbowAngle]
+        let jointAngleSample:[Float] = [lElbowAngle, rElbowAngle, lShoulderAngle, rShoulderAngle]
 
         
         /// Record data
@@ -107,7 +135,7 @@ extension ViewController{
         let jointModelNodesArr: [SCNNode] = Array(repeating: SCNNode(), count: numRecordedJoints)
 
         var dataSample: [Float] = Array(repeating: 0.0, count: numRecordedJoints*6)
-//        print("START RECORD")
+
         for (arrIndex, jointIndex) in jointIndexArr.enumerated() {
             jointLocalNodesArr[arrIndex].transform = SCNMatrix4(jointLocalTransforms[jointIndex])
             jointModelNodesArr[arrIndex].transform = SCNMatrix4(jointModelTransforms[jointIndex])
@@ -132,11 +160,11 @@ extension ViewController{
         // Also copy over the rotation of the body anchor, because the skeleton's pose
         // in the world is relative to the body anchor's rotation.
 
-//        characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
+        //characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
         let quaternion = simd_quatf(angle: degreesToRadians(selectedAngle),
-        axis: simd_float3(x: 0,
-                          y: 1,
-                          z: 0))
+                                    axis: simd_float3(x: 0,
+                                                      y: 1,
+                                                      z: 0))
         characterAnchor.orientation = quaternion
 
         if let character = character, character.parent == nil {
@@ -144,9 +172,44 @@ extension ViewController{
             // 1. the body anchor was detected and
             // 2. the character was loaded.
             characterAnchor.addChild(character)
+            print("added anchor")
+
         }
+        bodyAnchorArr.append(bodyAnchor)
+
+        print("Track Body " + bodyAnchorArr.count.description)
+
         
     }
+    
+    func bodyReplayProcess(bodyAnchor:ARBodyAnchor) -> Void {
+        print("Replay Body " + bodyAnchor.skeleton.jointModelTransforms[20].debugDescription)
+        // Update the position of the character anchor's position.
+        let bodyPosition = simd_make_float3(bodyAnchor.transform.columns.3)
+        characterReplayAnchor.position = bodyPosition - characterOffset
+        // Also copy over the rotation of the body anchor, because the skeleton's pose
+        // in the world is relative to the body anchor's rotation.
+
+        //characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
+        let quaternion = simd_quatf(angle: degreesToRadians(selectedAngle),
+                                    axis: simd_float3(x: 0,
+                                                      y: 1,
+                                                      z: 0))
+        characterReplayAnchor.orientation = quaternion
+
+        if let character = replayCharacter, character.parent == nil {
+            // Attach the character to its anchor as soon as
+            // 1. the body anchor was detected and
+            // 2. the character was loaded.
+            characterReplayAnchor.addChild(character)
+            
+            print("added anchor replay")
+            print(characterReplayAnchor.children.description)
+        }
+                
+        
+    }
+
     
     func computeJointAngle(startJointPos: simd_float3, middleJointPos: simd_float3, endJointPos: simd_float3) -> Float {
         let vec1 = startJointPos-middleJointPos
@@ -156,5 +219,9 @@ extension ViewController{
 
     func degreesToRadians(_ degrees: Float) -> Float {
         return degrees * .pi / 180
+    }
+    
+    func radiansToDegrees(_ radians: Float) -> Float {
+        return radians * 180 / .pi
     }
 }

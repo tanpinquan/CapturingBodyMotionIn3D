@@ -155,4 +155,27 @@ extension ViewController{
         }
     }
     
+    func readFile() -> Void {
+        let filePath = Bundle.main.path(forResource: "shoulder_1_1", ofType: "csv");
+        let fileUrl = NSURL.fileURL(withPath: filePath!)
+do {
+    let file = try String(contentsOf: fileUrl)
+    let rows = file.components(separatedBy: .newlines)
+    for row in rows {
+        let fields = row.replacingOccurrences(of: "\"", with: "").components(separatedBy: ", ")
+        
+        var dataSample: [Float] = Array(repeating: 0.0, count: numRecordedJoints*6)
+        if(fields.count>dataSample.count){
+            for index in 0...dataSample.count-1 {
+                dataSample[index] = Float(fields[index]) ?? 0.0
+            }
+        }
+        let jointAngleSample:[Float] = [0.0, 1.0, 2.0, 3.0]
+        addAccelSampleToDataArray(posSample: dataSample, jointAngleSample: jointAngleSample)
+    }
+} catch {
+    print(error)
+}
+    }
+    
 }
