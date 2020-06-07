@@ -190,6 +190,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TQv-Vr-gT2">
+                                <rect key="frame" x="665" y="211.5" width="98" height="30"/>
+                                <state key="normal" title="Replay Screen"/>
+                                <connections>
+                                    <action selector="replayScreen:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ghg-aY-Wiz"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
@@ -209,6 +216,8 @@
                             <constraint firstItem="p8f-YE-aAX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="ZZ0-TT-3hQ"/>
                             <constraint firstItem="3pe-C6-nsD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fLE-gu-VbU"/>
                             <constraint firstItem="3pe-C6-nsD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="mVc-ht-eCK"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="TQv-Vr-gT2" secondAttribute="trailing" constant="5" id="v7d-9c-d4r"/>
+                            <constraint firstItem="TQv-Vr-gT2" firstAttribute="top" secondItem="p8f-YE-aAX" secondAttribute="bottom" constant="5" id="xhR-Az-Xeu"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -226,11 +235,44 @@
                         <outlet property="rightLabelY" destination="N1B-NS-MVd" id="t7U-zx-Glo"/>
                         <outlet property="rightLabelZ" destination="D42-ZY-5i6" id="DIw-eC-GTH"/>
                         <outlet property="toggleRecordButton" destination="jhf-mV-Wki" id="NK9-Ej-FBu"/>
+                        <segue destination="zky-Hs-ucn" kind="presentation" identifier="goToReplay" modalPresentationStyle="fullScreen" id="0rJ-Rw-uet"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="132.8125" y="131.8359375"/>
+        </scene>
+        <!--ReplayScene-->
+        <scene sceneID="gFr-ex-7GT">
+            <objects>
+                <viewController id="zky-Hs-ucn" userLabel="ReplayScene" customClass="ReplayViewController" customModule="BodyDetection" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SAE-I2-RSL" userLabel="SCNView" customClass="SCNView">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sxL-dK-bMG">
+                                <rect key="frame" x="20" y="20" width="38" height="30"/>
+                                <state key="normal" title="Track"/>
+                                <connections>
+                                    <action selector="back:" destination="zky-Hs-ucn" eventType="touchUpInside" id="hs0-X8-05c"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="sxL-dK-bMG" firstAttribute="top" secondItem="tVQ-9G-cj7" secondAttribute="top" constant="20" id="hRW-8T-BKs"/>
+                            <constraint firstItem="sxL-dK-bMG" firstAttribute="leading" secondItem="tVQ-9G-cj7" secondAttribute="leading" constant="20" id="v8h-Ma-CGr"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="tVQ-9G-cj7"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="kl8-MJ-GYa"/>
+                    <connections>
+                        <outlet property="scnView" destination="SAE-I2-RSL" id="b9q-Ei-YlD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="diO-67-jd1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="930" y="132"/>
         </scene>
     </scenes>
 </document>

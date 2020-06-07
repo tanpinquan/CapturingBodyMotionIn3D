@@ -151,6 +151,8 @@ extension ViewController{
         addAccelSampleToDataArray(posSample: dataSample, jointAngleSample: jointAngleSample)
         if(recording){
             bodyPosArr[bodyPosArr.count-1] = dataSample
+            bodyAnchorArr.append(bodyAnchor)
+
         }
 
         
@@ -175,9 +177,8 @@ extension ViewController{
             print("added anchor")
 
         }
-        bodyAnchorArr.append(bodyAnchor)
 
-        print("Track Body " + bodyAnchorArr.count.description)
+//        print("Track Body " + bodyAnchorArr.count.description)
 
         
     }

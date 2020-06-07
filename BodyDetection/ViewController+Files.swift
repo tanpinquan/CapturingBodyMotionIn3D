@@ -127,6 +127,15 @@ extension ViewController{
                 print("File created:" + fileName)
             }
             catch {/* error handling here */}
+            
+//            let archiveName = "motion_capture_1"
+//            let archiveURL = dir.appendingPathComponent(archiveName)
+
+            let motionCaptureData = MotionCaptureData(anchorArray: bodyAnchorArr)
+            if let dataToBeArchived = try? NSKeyedArchiver.archivedData(withRootObject: motionCaptureData, requiringSecureCoding: false) {
+                print("save archive")
+                UserDefaults.standard.set(dataToBeArchived, forKey: "motion_capture_1")
+            }
 
         }
         bodyPosArr = []
@@ -158,24 +167,24 @@ extension ViewController{
     func readFile() -> Void {
         let filePath = Bundle.main.path(forResource: "shoulder_1_1", ofType: "csv");
         let fileUrl = NSURL.fileURL(withPath: filePath!)
-do {
-    let file = try String(contentsOf: fileUrl)
-    let rows = file.components(separatedBy: .newlines)
-    for row in rows {
-        let fields = row.replacingOccurrences(of: "\"", with: "").components(separatedBy: ", ")
-        
-        var dataSample: [Float] = Array(repeating: 0.0, count: numRecordedJoints*6)
-        if(fields.count>dataSample.count){
-            for index in 0...dataSample.count-1 {
-                dataSample[index] = Float(fields[index]) ?? 0.0
+        do {
+            let file = try String(contentsOf: fileUrl)
+            let rows = file.components(separatedBy: .newlines)
+            for row in rows {
+                let fields = row.replacingOccurrences(of: "\"", with: "").components(separatedBy: ", ")
+                
+                var dataSample: [Float] = Array(repeating: 0.0, count: numRecordedJoints*6)
+                if(fields.count>dataSample.count){
+                    for index in 0...dataSample.count-1 {
+                        dataSample[index] = Float(fields[index]) ?? 0.0
+                    }
+                }
+                let jointAngleSample:[Float] = [0.0, 1.0, 2.0, 3.0]
+                addAccelSampleToDataArray(posSample: dataSample, jointAngleSample: jointAngleSample)
             }
+        } catch {
+            print(error)
         }
-        let jointAngleSample:[Float] = [0.0, 1.0, 2.0, 3.0]
-        addAccelSampleToDataArray(posSample: dataSample, jointAngleSample: jointAngleSample)
-    }
-} catch {
-    print(error)
-}
     }
     
 }

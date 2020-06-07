@@ -423,6 +423,22 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         }
     }
     
+    @IBAction func replayScreen(_ sender: UIButton) {
+        if(!bodyAnchorArr.isEmpty){
+            arView.session.pause()
+            performSegue(withIdentifier: "goToReplay", sender: nil)
+        }
+    }
+    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+//    {
+//        // Determine what the segue destination is
+//        if segue.destination is ReplayViewController
+//        {
+//            let vc = segue.destination as? ReplayViewController
+//            vc?.bodyAnchorArr = bodyAnchorArr
+//        }
+//    }
     /// Exercise Prediction
    
     
