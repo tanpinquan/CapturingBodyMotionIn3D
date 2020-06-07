@@ -89,14 +89,7 @@ extension ViewController{
         + imageStr0 + imageStr1
         
         var numberInt = 0
-//        bodyPosArr.forEach{data in
-//            var newLine = data.description
-//            newLine = newLine.replacingOccurrences(of: "[", with: "")
-//            newLine = newLine.replacingOccurrences(of: "]", with: "")
-//            newLine.append("\n")
-////            let newLine = "\(String(describing: data[0])),\(String(describing: data[1])),\(String(describing: data[2]))\n"
-//            bodyCsvString.append(newLine)
-//        }
+
         
         for (bodyPos,imagePos) in zip(bodyPosArr,imagePosArr) {
             var newLine = bodyPos.description + ", " + imagePos.description
@@ -128,14 +121,7 @@ extension ViewController{
             }
             catch {/* error handling here */}
             
-//            let archiveName = "motion_capture_1"
-//            let archiveURL = dir.appendingPathComponent(archiveName)
 
-            let motionCaptureData = MotionCaptureData(anchorArray: bodyAnchorArr)
-            if let dataToBeArchived = try? NSKeyedArchiver.archivedData(withRootObject: motionCaptureData, requiringSecureCoding: false) {
-                print("save archive")
-                UserDefaults.standard.set(dataToBeArchived, forKey: "motion_capture_1")
-            }
 
         }
         bodyPosArr = []

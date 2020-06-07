@@ -357,6 +357,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         if(!recording){
             toggleRecordButton.setTitle("Start Recording", for: .normal)
             createCSV()
+            saveRecording(anchorArr: bodyAnchorArr)
         }else{
             toggleRecordButton.setTitle("Stop Recording", for: .normal)
             

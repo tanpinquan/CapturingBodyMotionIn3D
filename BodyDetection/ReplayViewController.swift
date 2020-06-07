@@ -19,33 +19,8 @@ class ReplayViewController: UIViewController, SCNSceneRendererDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        bodyAnchorArr = loadRecording(key: "recording_0")
   
-        if let  archivedObject = UserDefaults.standard.data(forKey: "motion_capture_1"){
-            do {
-                if let document = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(archivedObject) as? MotionCaptureData {
-                    print("loaded " + document.anchorArray.count.description + " anchors")
-                    print(document.anchorArray[0])
-                    bodyAnchorArr = document.anchorArray
-                }
-            } catch {
-                // do something with the error
-            }
-        }
-
-//        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-//
-//            let archiveName = "motion_capture_1"
-//            let archiveURL = dir.appendingPathComponent(archiveName)
-//            print(archiveURL)
-//            if let archivedData = try? Data(contentsOf: archiveURL),
-//             let motionCaptureData = (try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(archivedData)) as? MotionCaptureData {
-//             /// Do anything with the unarchived object
-//             ///
-//                print(motionCaptureData.anchorArray)
-//            }
-//        }
-        
-        print(bodyAnchorArr.count)
         
         // create and add a camera to the scene
         

@@ -22,6 +22,8 @@
 		30AB05F024872A7400180323 /* ShoulderAbductionClassifier50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30AB05EF24872A7400180323 /* ShoulderAbductionClassifier50.mlmodel */; };
 		30AB05F424872CB100180323 /* ShoulderAbductionClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30AB05F324872CB100180323 /* ShoulderAbductionClassifier.mlmodel */; };
 		30AB05F624872E5F00180323 /* ShoulderAbductionClassifier100.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30AB05F524872E5F00180323 /* ShoulderAbductionClassifier100.mlmodel */; };
+		30E088D8248D078E0092AD9F /* ManageUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E088D7248D078E0092AD9F /* ManageUserDefaults.swift */; };
+		30E088DA248D0E5E0092AD9F /* SelectRecordingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E088D9248D0E5E0092AD9F /* SelectRecordingViewController.swift */; };
 		30F888F3248763FD009ED6BD /* ShoulderAbductionClassifier150.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30F888F2248763FD009ED6BD /* ShoulderAbductionClassifier150.mlmodel */; };
 		30F888F524876534009ED6BD /* ShoulderAbductionClassifier75.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30F888F424876534009ED6BD /* ShoulderAbductionClassifier75.mlmodel */; };
 		30F888F724876569009ED6BD /* ShoulderAbductionClassifier125.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 30F888F624876569009ED6BD /* ShoulderAbductionClassifier125.mlmodel */; };
@@ -56,6 +58,8 @@
 		30AB05F524872E5F00180323 /* ShoulderAbductionClassifier100.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderAbductionClassifier100.mlmodel; sourceTree = "<group>"; };
 		30B5E85424851AE000D3F700 /* AR Session 7.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 7.mov"; sourceTree = "<group>"; };
 		30B5E85924851C9400D3F700 /* AR Session 8.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 8.mov"; sourceTree = "<group>"; };
+		30E088D7248D078E0092AD9F /* ManageUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageUserDefaults.swift; sourceTree = "<group>"; };
+		30E088D9248D0E5E0092AD9F /* SelectRecordingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectRecordingViewController.swift; sourceTree = "<group>"; };
 		30F888F2248763FD009ED6BD /* ShoulderAbductionClassifier150.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderAbductionClassifier150.mlmodel; sourceTree = "<group>"; };
 		30F888F424876534009ED6BD /* ShoulderAbductionClassifier75.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderAbductionClassifier75.mlmodel; sourceTree = "<group>"; };
 		30F888F624876569009ED6BD /* ShoulderAbductionClassifier125.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ShoulderAbductionClassifier125.mlmodel; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 				0C71C055228FA198003621C4 /* Utilities.swift */,
 				308B91CC248B61FA00C570C8 /* ReplayViewController.swift */,
 				309396D9248CB82D00E20785 /* MotionCaptureData.swift */,
+				30E088D7248D078E0092AD9F /* ManageUserDefaults.swift */,
+				30E088D9248D0E5E0092AD9F /* SelectRecordingViewController.swift */,
 				0C8C7867228387D2006A6EE1 /* character */,
 				2F60E1E022631E0F00357E98 /* Main.storyboard */,
 				2F60E1E322631E0F00357E98 /* Assets.xcassets */,
@@ -237,8 +243,10 @@
 				2F60E1DD22631E0F00357E98 /* ViewController.swift in Sources */,
 				308B91CD248B61FA00C570C8 /* ReplayViewController.swift in Sources */,
 				309396DA248CB82D00E20785 /* MotionCaptureData.swift in Sources */,
+				30E088D8248D078E0092AD9F /* ManageUserDefaults.swift in Sources */,
 				0C0AADE42290B23100E0502A /* MessageLabel.swift in Sources */,
 				30AB05F024872A7400180323 /* ShoulderAbductionClassifier50.mlmodel in Sources */,
+				30E088DA248D0E5E0092AD9F /* SelectRecordingViewController.swift in Sources */,
 				2F60E1DB22631E0F00357E98 /* AppDelegate.swift in Sources */,
 				30AB05F424872CB100180323 /* ShoulderAbductionClassifier.mlmodel in Sources */,
 				30AB05F624872E5F00180323 /* ShoulderAbductionClassifier100.mlmodel in Sources */,
