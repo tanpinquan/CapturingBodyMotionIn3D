@@ -32,13 +32,17 @@ func getRecordingKeys() -> [String] {
 
 func saveRecording(anchorArr:[ARBodyAnchor]) -> Void {
     
-    let recordingKeys = getRecordingKeys()
+    var recordingKeys = getRecordingKeys()
     
     let key = "recording_" + recordingKeys.count.description
     
     if let dataToBeArchived = try? NSKeyedArchiver.archivedData(withRootObject: anchorArr, requiringSecureCoding: false) {
         print("Save Recording:" + key)
         UserDefaults.standard.set(dataToBeArchived, forKey: key)
+        
+        recordingKeys.append(key)
+        saveRecordingKeys(keys: recordingKeys)
+        
     }
 }
 

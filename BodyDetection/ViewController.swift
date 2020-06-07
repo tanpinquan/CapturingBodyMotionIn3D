@@ -94,6 +94,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         }
         self.jointPicker.delegate = self
         self.jointPicker.dataSource = self
+        self.navigationController?.navigationBar.isHidden = true
+
         pickerData = [ARSkeletonDefinition.defaultBody3D.jointNames,
                       ["Knee","Shoulder"],
                       angleArr.map(String.init)
@@ -425,8 +427,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     }
     
     @IBAction func replayScreen(_ sender: UIButton) {
+        arView.session.pause()
+
         if(!bodyAnchorArr.isEmpty){
-            arView.session.pause()
             performSegue(withIdentifier: "goToReplay", sender: nil)
         }
     }
