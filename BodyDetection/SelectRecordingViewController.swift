@@ -10,34 +10,34 @@ import UIKit
 
 class SelectRecordingViewController: UITableViewController {
 
-    var recordingKeys:[String] = []
+    var recordingInfo:RecordingInfo = RecordingInfo(recordingKeys: [], recordingLengths: [])
     var selectedRecording:String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = false
 
-        recordingKeys = getRecordingKeys()
+        recordingInfo = getRecordingKeys()
 
         // Do any additional setup after loading the view.
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return recordingKeys.count
+        return recordingInfo.recordingKeys.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecordingItem", for: indexPath)
         
         if let label = cell.viewWithTag(100) as? UILabel {
-            label.text = recordingKeys[indexPath.row]
+            label.text = recordingInfo.recordingKeys[indexPath.row] + " (" + recordingInfo.recordingLengths[indexPath.row].description + " samples)"
         }
         
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedRecording = recordingKeys[indexPath.row]
+        selectedRecording = recordingInfo.recordingKeys[indexPath.row]
         performSegue(withIdentifier: "ShowRecording", sender: nil)
 
     }

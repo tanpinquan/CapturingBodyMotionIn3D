@@ -45,13 +45,23 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     let boxEntity2 = ModelEntity(mesh: MeshResource.generateBox(size: 0.03), materials: [SimpleMaterial(color: .green, isMetallic: true)])
     let planeEntity = ModelEntity(mesh: MeshResource.generatePlane(width: 0.1, depth: 0.2), materials: [UnlitMaterial(color: .red)])
     let planeEntity2 = ModelEntity(mesh: MeshResource.generatePlane(width: 0.1, depth: 0.2), materials: [UnlitMaterial(color: .red)])
-//    let textEntity = ModelEntity(mesh: MeshResource.generateText("✓",
-//                                                                 extrusionDepth: 0.00,
-//                                                                 font: .systemFont(ofSize: 0.03),
-//                                                                 containerFrame: CGRect.zero,
-//                                                                 alignment: .left,
-//                                                                 lineBreakMode: .byCharWrapping)
-//                                 )
+    let thighTextEntity = ModelEntity(mesh: MeshResource.generateText("Thigh",
+                                                                 extrusionDepth: 0.01,
+                                                                 font: .systemFont(ofSize: 0.03),
+                                                                 containerFrame: CGRect.zero,
+                                                                 alignment: .left,
+                                                                 lineBreakMode: .byCharWrapping),
+                                 materials:[UnlitMaterial(color: .yellow)]
+                                 )
+    
+    let calfTextEntity = ModelEntity(mesh: MeshResource.generateText("Calf",
+                                                                 extrusionDepth: 0.01,
+                                                                 font: .systemFont(ofSize: 0.03),
+                                                                 containerFrame: CGRect.zero,
+                                                                 alignment: .left,
+                                                                 lineBreakMode: .byCharWrapping),
+                                 materials:[UnlitMaterial(color: .yellow)]
+                                 )
     let imageDisplayAnchor = AnchorEntity()
     let imageDisplayAnchor2 = AnchorEntity()
 
@@ -281,28 +291,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             
 
         }
-//        if(replay){
-//        /// Replay recorded positio
-//            if(bodyAnchorArr.count>1){
-//                bodyReplayProcess(bodyAnchor: bodyAnchorArr[0])
-//            }
-//        }
-    }
-    var currentReplayIndex = 0
 
-    
-    func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        if(replay){
-          /// Replay recorded positio
-              if(bodyAnchorArr.count>1){
-                  bodyReplayProcess(bodyAnchor: bodyAnchorArr[currentReplayIndex])
-                currentReplayIndex += 1
-                if(currentReplayIndex == bodyAnchorArr.count){
-                    currentReplayIndex = 0
-                }
-              }
-          }
     }
+
     
     // Picker functions
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -366,6 +357,19 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         }
     }
     
+    @IBAction func replayPressed(_ sender: UIButton) {
+        arView.session.pause()
+        if(recording){
+            recording = false
+            toggleRecordButton.setTitle("Stop Recording", for: .normal)
+            createCSV()
+            saveRecording(anchorArr: bodyAnchorArr)
+        }
+        performSegue(withIdentifier: "ChooseRecording", sender: nil)
+
+        
+
+    }
     
     @IBAction func deleteFilesPressed(_ sender: UIButton) {
         deleteFiles()
@@ -397,52 +401,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
     }
 
-    @IBAction func toggleReplay(_ sender: UIButton) {
-        
-//        if(trackingMode==0){
-//            trackingMode = 1
-//            resetImageTracking()
-//            sender.setTitle("Track Body", for: .normal)
-//            modeLabel.text = "Image tracking only"
-//
-//        }else if(trackingMode==1){
-//            trackingMode = 0
-//            resetBodyTracking()
-//            sender.setTitle("Track Image", for: .normal)
-//            modeLabel.text = "Image and body tracking"
-//
-//        }
-        
-        print(trackingMode.description)
-        replay = !replay
-        if(!replay){
-            sender.setTitle("Replay", for: .normal)
-            resetBodyTracking()
 
-        }else{
-            sender.setTitle("Track", for: .normal)
-            resetReplayConfiguration()
-
-        }
-    }
-    
-    @IBAction func replayScreen(_ sender: UIButton) {
-        arView.session.pause()
-
-        if(!bodyAnchorArr.isEmpty){
-            performSegue(withIdentifier: "goToReplay", sender: nil)
-        }
-    }
-    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-//    {
-//        // Determine what the segue destination is
-//        if segue.destination is ReplayViewController
-//        {
-//            let vc = segue.destination as? ReplayViewController
-//            vc?.bodyAnchorArr = bodyAnchorArr
-//        }
-//    }
     /// Exercise Prediction
    
     

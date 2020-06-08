@@ -15,31 +15,76 @@ extension ViewController{
     func imageTrackingProcess(imageAnchor:ARImageAnchor, imageIndex:Int) -> Void {
         let imagePosition = String(format: ": %.2f,\t%.2f,\t%.2f", imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z)
         print((imageAnchor.referenceImage.name ?? "") + imagePosition)
+        let rotateY = simd_quatf(angle: GLKMathDegreesToRadians(90), axis: SIMD3(x: 0, y: 1, z: 0))
+        let rotateX = simd_quatf(angle: GLKMathDegreesToRadians(270), axis: SIMD3(x: 1, y: 0, z: 0))
+        let rotate = simd_mul(rotateY, rotateX)
 
-        if(imageIndex==0){
-            rightLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+        if(imageAnchor.referenceImage.name == "meiji2"){
+            let thighNode:SCNNode = SCNNode()
+            thighNode.transform = SCNMatrix4(imageAnchor.transform)
+            
+            leftLabelX.displayMessage("X: " + thighNode.position.x.description.prefix(5), duration: 1)
+            leftLabelY.displayMessage("Y: " + thighNode.position.y.description.prefix(5), duration: 1)
+            leftLabelZ.displayMessage("Z: " + thighNode.position.z.description.prefix(5), duration: 1)
+        
+            rightLabelX.displayMessage("Roll: " + radiansToDegrees(thighNode.eulerAngles.x).description.prefix(5), duration: 1)
+            rightLabelY.displayMessage("Pitch: " + radiansToDegrees(thighNode.eulerAngles.y).description.prefix(5), duration: 1)
+            rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(thighNode.eulerAngles.z).description.prefix(5), duration: 1)
+            
             imageDisplayAnchor.position = simd_make_float3(imageAnchor.transform.columns.3)
             imageDisplayAnchor.orientation = Transform(matrix: imageAnchor.transform).rotation
             imageDisplayAnchor.addChild(planeEntity)
-//            imageDisplayAnchor.addChild(textEntity)
-        }else if(imageIndex==1){
-            rightLabelY.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+   
+            thighTextEntity.transform.rotation = rotate
+            imageDisplayAnchor.addChild(thighTextEntity)
+
+            
+        }else if(imageAnchor.referenceImage.name == "jatz"){
+            let thighNode:SCNNode = SCNNode()
+            thighNode.transform = SCNMatrix4(imageAnchor.transform)
+
+            leftLabelX.displayMessage("X: " + thighNode.position.x.description.prefix(5), duration: 1)
+            leftLabelY.displayMessage("Y: " + thighNode.position.y.description.prefix(5), duration: 1)
+            leftLabelZ.displayMessage("Z: " + thighNode.position.z.description.prefix(5), duration: 1)
+
+            rightLabelX.displayMessage("Roll: " + radiansToDegrees(thighNode.eulerAngles.x).description.prefix(5), duration: 1)
+            rightLabelY.displayMessage("Pitch: " + radiansToDegrees(thighNode.eulerAngles.y).description.prefix(5), duration: 1)
+            rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(thighNode.eulerAngles.z).description.prefix(5), duration: 1)
+
             imageDisplayAnchor2.position = simd_make_float3(imageAnchor.transform.columns.3)
             imageDisplayAnchor2.orientation = Transform(matrix: imageAnchor.transform).rotation
             imageDisplayAnchor2.addChild(planeEntity2)
-        }else{
-            rightLabelZ.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
-
-        }
-        
-        if(imageAnchor.referenceImage.name == "meiji1"){
             
-            imagePosArr[imagePosArr.count-1][0...2] = [imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z]
-//            imagePosArr0.append([imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z])
-        }else if(imageAnchor.referenceImage.name == "meiji2"){
-            imagePosArr[imagePosArr.count-1][3...5] = [imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z]
-//            imagePosArr1.append([imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z])
-        }
+            calfTextEntity.transform.rotation = rotate
+            imageDisplayAnchor2.addChild(calfTextEntity)
+            
+            
+          
+      }
+        
+
+//        if(imageIndex==0){
+//            rightLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+//            imageDisplayAnchor.position = simd_make_float3(imageAnchor.transform.columns.3)
+//            imageDisplayAnchor.orientation = Transform(matrix: imageAnchor.transform).rotation
+//            imageDisplayAnchor.addChild(planeEntity)
+////            imageDisplayAnchor.addChild(textEntity)
+//        }else if(imageIndex==1){
+//            rightLabelY.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+//            imageDisplayAnchor2.position = simd_make_float3(imageAnchor.transform.columns.3)
+//            imageDisplayAnchor2.orientation = Transform(matrix: imageAnchor.transform).rotation
+//            imageDisplayAnchor2.addChild(planeEntity2)
+//        }else{
+//            rightLabelZ.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
+//
+//        }
+        
+//        if(imageAnchor.referenceImage.name == "meiji1"){
+//
+//            imagePosArr[imagePosArr.count-1][0...2] = [imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z]
+//        }else if(imageAnchor.referenceImage.name == "meiji2"){
+//            imagePosArr[imagePosArr.count-1][3...5] = [imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z]
+//        }
     }
     
     func bodyTrackingProcess(bodyAnchor:ARBodyAnchor) -> Void {
@@ -182,34 +227,7 @@ extension ViewController{
 
         
     }
-    
-    func bodyReplayProcess(bodyAnchor:ARBodyAnchor) -> Void {
-        print("Replay Body " + bodyAnchor.skeleton.jointModelTransforms[20].debugDescription)
-        // Update the position of the character anchor's position.
-        let bodyPosition = simd_make_float3(bodyAnchor.transform.columns.3)
-        characterReplayAnchor.position = bodyPosition - characterOffset
-        // Also copy over the rotation of the body anchor, because the skeleton's pose
-        // in the world is relative to the body anchor's rotation.
 
-        //characterAnchor.orientation = Transform(matrix: bodyAnchor.transform).rotation
-        let quaternion = simd_quatf(angle: degreesToRadians(selectedAngle),
-                                    axis: simd_float3(x: 0,
-                                                      y: 1,
-                                                      z: 0))
-        characterReplayAnchor.orientation = quaternion
-
-        if let character = replayCharacter, character.parent == nil {
-            // Attach the character to its anchor as soon as
-            // 1. the body anchor was detected and
-            // 2. the character was loaded.
-            characterReplayAnchor.addChild(character)
-            
-            print("added anchor replay")
-            print(characterReplayAnchor.children.description)
-        }
-                
-        
-    }
 
     
     func computeJointAngle(startJointPos: simd_float3, middleJointPos: simd_float3, endJointPos: simd_float3) -> Float {

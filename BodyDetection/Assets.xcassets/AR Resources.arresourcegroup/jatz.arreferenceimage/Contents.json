@@ -1,0 +1,16 @@
+{
+  "images" : [
+    {
+      "filename" : "jats.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "unit" : "centimeters",
+    "width" : 12.853904761904762
+  }
+}
