@@ -84,8 +84,10 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                                 2, 3, 4,
                                 7, 8, 9]
     
-    var replay: Bool = false
     var bodyAnchorArr: [ARBodyAnchor] = []
+    var thighAnchorArr: [ARImageAnchor] = []
+    var calfAnchorArr: [ARImageAnchor] = []
+    var allImagesDetected: Bool = false;
 
     var recording: Bool = false
     var selectedExercise: Int = 0
@@ -277,6 +279,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         var imageIndex:Int = 0
         imagePosArr.append(Array(repeating: 0, count: 6))
         bodyPosArr.append(Array(repeating: 0, count: numRecordedJoints*6))
+        allImagesDetected = checkForBothImages(anchors: anchors)
         
         for anchor in anchors {
             /// Processsing for image detection
@@ -292,6 +295,24 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
         }
 
+    }
+    
+    func checkForBothImages(anchors: [ARAnchor]) -> Bool {
+        
+        var thighDetected: Bool = false
+        var calfDetected: Bool = false
+        
+        for anchor in anchors {
+            if let imageAnchor = anchor as? ARImageAnchor{
+                if (imageAnchor.referenceImage.name == "meiji2"){
+                    thighDetected = true
+                }else if (imageAnchor.referenceImage.name == "jatz"){
+                    calfDetected = true
+                }
+            }
+        }
+        
+        return thighDetected && calfDetected
     }
 
     
@@ -350,7 +371,15 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         if(!recording){
             toggleRecordButton.setTitle("Start Recording", for: .normal)
             createCSV()
-            saveRecording(anchorArr: bodyAnchorArr)
+            if(trackingMode==0){
+                saveBodyRecording(anchorArr: bodyAnchorArr)
+
+            }else if(trackingMode==1){
+                saveLegRecording(thighAnchors:thighAnchorArr, calfAnchors:calfAnchorArr)
+            }
+            
+            print("thigh:" + thighAnchorArr.count.description + "calf:" + calfAnchorArr.count.description)
+            
         }else{
             toggleRecordButton.setTitle("Stop Recording", for: .normal)
             
@@ -363,7 +392,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             recording = false
             toggleRecordButton.setTitle("Stop Recording", for: .normal)
             createCSV()
-            saveRecording(anchorArr: bodyAnchorArr)
+            saveBodyRecording(anchorArr: bodyAnchorArr)
         }
         performSegue(withIdentifier: "ChooseRecording", sender: nil)
 

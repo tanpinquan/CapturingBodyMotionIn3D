@@ -10,7 +10,7 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ReplayViewController: UIViewController, SCNSceneRendererDelegate {
+class ReplayBodyViewController: UIViewController, SCNSceneRendererDelegate {
     var bodyAnchorArr: [ARBodyAnchor] = []
     var recordingKey:String = ""
     @IBOutlet var scnView: SCNView!
@@ -22,7 +22,7 @@ class ReplayViewController: UIViewController, SCNSceneRendererDelegate {
         // Do any additional setup after loading the view.
         self.navigationController?.navigationBar.isHidden = false
 
-        bodyAnchorArr = loadRecording(key: recordingKey)
+        bodyAnchorArr = loadBodyRecording(key: recordingKey)
   
         
         // create and add a camera to the scene

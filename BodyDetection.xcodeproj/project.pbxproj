@@ -15,7 +15,8 @@
 		2F60E1E222631E0F00357E98 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E022631E0F00357E98 /* Main.storyboard */; };
 		2F60E1E422631E0F00357E98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E322631E0F00357E98 /* Assets.xcassets */; };
 		2F60E1E722631E0F00357E98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F60E1E522631E0F00357E98 /* LaunchScreen.storyboard */; };
-		308B91CD248B61FA00C570C8 /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308B91CC248B61FA00C570C8 /* ReplayViewController.swift */; };
+		30850C45248E6B0500478393 /* ReplayLegViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30850C44248E6B0500478393 /* ReplayLegViewController.swift */; };
+		308B91CD248B61FA00C570C8 /* ReplayBodyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308B91CC248B61FA00C570C8 /* ReplayBodyViewController.swift */; };
 		309396DA248CB82D00E20785 /* MotionCaptureData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309396D9248CB82D00E20785 /* MotionCaptureData.swift */; };
 		309A3E5E2479EA8700D3C37A /* ViewController+Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */; };
 		309A3E602479EB9E00D3C37A /* ViewController+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */; };
@@ -50,7 +51,8 @@
 		302EBA91247F81250012F026 /* AR Session 2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 2.mov"; sourceTree = "<group>"; };
 		302EBA92247F88830012F026 /* AR Session 3.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 3.mov"; sourceTree = "<group>"; };
 		30850C43248E051C00478393 /* AR Session knee 1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session knee 1.mov"; sourceTree = "<group>"; };
-		308B91CC248B61FA00C570C8 /* ReplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayViewController.swift; sourceTree = "<group>"; };
+		30850C44248E6B0500478393 /* ReplayLegViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayLegViewController.swift; sourceTree = "<group>"; };
+		308B91CC248B61FA00C570C8 /* ReplayBodyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayBodyViewController.swift; sourceTree = "<group>"; };
 		309396D9248CB82D00E20785 /* MotionCaptureData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionCaptureData.swift; sourceTree = "<group>"; };
 		309A3E5D2479EA8700D3C37A /* ViewController+Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Track.swift"; sourceTree = "<group>"; };
 		309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Files.swift"; sourceTree = "<group>"; };
@@ -121,12 +123,13 @@
 				309A3E5F2479EB9E00D3C37A /* ViewController+Files.swift */,
 				0C0AADE32290B23100E0502A /* MessageLabel.swift */,
 				0C71C055228FA198003621C4 /* Utilities.swift */,
-				308B91CC248B61FA00C570C8 /* ReplayViewController.swift */,
+				30E088D9248D0E5E0092AD9F /* SelectRecordingViewController.swift */,
+				308B91CC248B61FA00C570C8 /* ReplayBodyViewController.swift */,
+				30850C44248E6B0500478393 /* ReplayLegViewController.swift */,
 				309396D9248CB82D00E20785 /* MotionCaptureData.swift */,
 				30E088D7248D078E0092AD9F /* ManageUserDefaults.swift */,
-				30E088D9248D0E5E0092AD9F /* SelectRecordingViewController.swift */,
-				0C8C7867228387D2006A6EE1 /* character */,
 				2F60E1E022631E0F00357E98 /* Main.storyboard */,
+				0C8C7867228387D2006A6EE1 /* character */,
 				2F60E1E322631E0F00357E98 /* Assets.xcassets */,
 				2F60E1E522631E0F00357E98 /* LaunchScreen.storyboard */,
 				2F60E1EB22631E0F00357E98 /* Info.plist */,
@@ -243,7 +246,8 @@
 				0C71C056228FA198003621C4 /* Utilities.swift in Sources */,
 				309A3E5E2479EA8700D3C37A /* ViewController+Track.swift in Sources */,
 				2F60E1DD22631E0F00357E98 /* ViewController.swift in Sources */,
-				308B91CD248B61FA00C570C8 /* ReplayViewController.swift in Sources */,
+				30850C45248E6B0500478393 /* ReplayLegViewController.swift in Sources */,
+				308B91CD248B61FA00C570C8 /* ReplayBodyViewController.swift in Sources */,
 				309396DA248CB82D00E20785 /* MotionCaptureData.swift in Sources */,
 				30E088D8248D078E0092AD9F /* ManageUserDefaults.swift in Sources */,
 				0C0AADE42290B23100E0502A /* MessageLabel.swift in Sources */,

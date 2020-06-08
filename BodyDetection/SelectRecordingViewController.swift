@@ -10,7 +10,7 @@ import UIKit
 
 class SelectRecordingViewController: UITableViewController {
 
-    var recordingInfo:RecordingInfo = RecordingInfo(recordingKeys: [], recordingLengths: [])
+    var recordingInfo:RecordingInfo = RecordingInfo(recordingKeys: [], recordingLengths: [], recordingTypes: [])
     var selectedRecording:String = ""
     
     override func viewDidLoad() {
@@ -30,7 +30,8 @@ class SelectRecordingViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecordingItem", for: indexPath)
         
         if let label = cell.viewWithTag(100) as? UILabel {
-            label.text = recordingInfo.recordingKeys[indexPath.row] + " (" + recordingInfo.recordingLengths[indexPath.row].description + " samples)"
+            label.text = recordingInfo.recordingKeys[indexPath.row]
+                + " (" + recordingInfo.recordingLengths[indexPath.row].description + " " + recordingInfo.recordingTypes[indexPath.row] + " samples)"
         }
         
         return cell
@@ -38,16 +39,22 @@ class SelectRecordingViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedRecording = recordingInfo.recordingKeys[indexPath.row]
-        performSegue(withIdentifier: "ShowRecording", sender: nil)
+        if(recordingInfo.recordingTypes[indexPath.row] == "body"){
+            performSegue(withIdentifier: "ReplayBodyRecording", sender: nil)
+        }else if(recordingInfo.recordingTypes[indexPath.row] == "leg"){
+            performSegue(withIdentifier: "ReplayLegRecording", sender: nil)
+        }
 
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         // Determine what the segue destination is
-        if segue.destination is ReplayViewController
-        {
-            let vc = segue.destination as? ReplayViewController
+        if segue.destination is ReplayBodyViewController{
+            let vc = segue.destination as? ReplayBodyViewController
+            vc?.recordingKey = selectedRecording
+        } else if segue.destination is ReplayLegViewController{
+            let vc = segue.destination as? ReplayLegViewController
             vc?.recordingKey = selectedRecording
         }
     }

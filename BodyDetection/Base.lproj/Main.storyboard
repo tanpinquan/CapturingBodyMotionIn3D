@@ -236,10 +236,10 @@
             </objects>
             <point key="canvasLocation" x="898.4375" y="131.8359375"/>
         </scene>
-        <!--ReplayScene-->
+        <!--ReplayBodyScene-->
         <scene sceneID="gFr-ex-7GT">
             <objects>
-                <viewController id="zky-Hs-ucn" userLabel="ReplayScene" customClass="ReplayViewController" customModule="BodyDetection" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="zky-Hs-ucn" userLabel="ReplayBodyScene" customClass="ReplayBodyViewController" customModule="BodyDetection" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="SAE-I2-RSL" userLabel="SCNView" customClass="SCNView">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -253,7 +253,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="diO-67-jd1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2430" y="104"/>
+            <point key="canvasLocation" x="2526" y="-284"/>
         </scene>
         <!--Select Recording View Controller-->
         <scene sceneID="tfJ-oV-hJo">
@@ -265,14 +265,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RecordingItem" id="OEx-i5-ofd">
-                                <rect key="frame" x="0.0" y="28" width="768" height="43.5"/>
+                                <rect key="frame" x="0.0" y="28" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="OEx-i5-ofd" id="aNm-uy-cm8">
-                                    <rect key="frame" x="0.0" y="0.0" width="768" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="te1-Ve-pGE">
-                                            <rect key="frame" x="20" y="11" width="728" height="21"/>
+                                            <rect key="frame" x="20" y="11" width="728" height="21.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -294,7 +294,8 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="jKi-Qw-QlS"/>
                     <connections>
-                        <segue destination="zky-Hs-ucn" kind="show" identifier="ShowRecording" id="Vnh-Cd-0yL"/>
+                        <segue destination="zky-Hs-ucn" kind="show" identifier="ReplayBodyRecording" id="Vnh-Cd-0yL"/>
+                        <segue destination="8Yy-RZ-fdl" kind="show" identifier="ReplayLegRecording" id="Je6-Gm-tfX"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1BZ-2A-o6y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -318,6 +319,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Odv-Uh-Pcd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="132.8125" y="131.8359375"/>
+        </scene>
+        <!--ReplayLegScene-->
+        <scene sceneID="IeF-kN-NoM">
+            <objects>
+                <viewController id="8Yy-RZ-fdl" userLabel="ReplayLegScene" customClass="ReplayLegViewController" customModule="BodyDetection" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="X1U-QM-eVF" userLabel="SCNView" customClass="SCNView">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="bOW-L1-aTg"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="xeC-A8-emR"/>
+                    <connections>
+                        <outlet property="scnView" destination="X1U-QM-eVF" id="9Oe-57-lIT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fEi-Bz-nrv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2526" y="403"/>
         </scene>
     </scenes>
 </document>

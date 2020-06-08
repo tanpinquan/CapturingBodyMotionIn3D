@@ -13,8 +13,9 @@ import ARKit
 extension ViewController{
     
     func imageTrackingProcess(imageAnchor:ARImageAnchor, imageIndex:Int) -> Void {
+        
         let imagePosition = String(format: ": %.2f,\t%.2f,\t%.2f", imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z)
-        print((imageAnchor.referenceImage.name ?? "") + imagePosition)
+//        print((imageAnchor.referenceImage.name ?? "") + imagePosition)
         let rotateY = simd_quatf(angle: GLKMathDegreesToRadians(90), axis: SIMD3(x: 0, y: 1, z: 0))
         let rotateX = simd_quatf(angle: GLKMathDegreesToRadians(270), axis: SIMD3(x: 1, y: 0, z: 0))
         let rotate = simd_mul(rotateY, rotateX)
@@ -37,19 +38,22 @@ extension ViewController{
    
             thighTextEntity.transform.rotation = rotate
             imageDisplayAnchor.addChild(thighTextEntity)
+            if(recording && allImagesDetected){
+                thighAnchorArr.append(imageAnchor)
+            }
 
             
         }else if(imageAnchor.referenceImage.name == "jatz"){
-            let thighNode:SCNNode = SCNNode()
-            thighNode.transform = SCNMatrix4(imageAnchor.transform)
+            let calfNode:SCNNode = SCNNode()
+            calfNode.transform = SCNMatrix4(imageAnchor.transform)
 
-            leftLabelX.displayMessage("X: " + thighNode.position.x.description.prefix(5), duration: 1)
-            leftLabelY.displayMessage("Y: " + thighNode.position.y.description.prefix(5), duration: 1)
-            leftLabelZ.displayMessage("Z: " + thighNode.position.z.description.prefix(5), duration: 1)
+            leftLabelX.displayMessage("X: " + calfNode.position.x.description.prefix(5), duration: 1)
+            leftLabelY.displayMessage("Y: " + calfNode.position.y.description.prefix(5), duration: 1)
+            leftLabelZ.displayMessage("Z: " + calfNode.position.z.description.prefix(5), duration: 1)
 
-            rightLabelX.displayMessage("Roll: " + radiansToDegrees(thighNode.eulerAngles.x).description.prefix(5), duration: 1)
-            rightLabelY.displayMessage("Pitch: " + radiansToDegrees(thighNode.eulerAngles.y).description.prefix(5), duration: 1)
-            rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(thighNode.eulerAngles.z).description.prefix(5), duration: 1)
+            rightLabelX.displayMessage("Roll: " + radiansToDegrees(calfNode.eulerAngles.x).description.prefix(5), duration: 1)
+            rightLabelY.displayMessage("Pitch: " + radiansToDegrees(calfNode.eulerAngles.y).description.prefix(5), duration: 1)
+            rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(calfNode.eulerAngles.z).description.prefix(5), duration: 1)
 
             imageDisplayAnchor2.position = simd_make_float3(imageAnchor.transform.columns.3)
             imageDisplayAnchor2.orientation = Transform(matrix: imageAnchor.transform).rotation
@@ -58,33 +62,15 @@ extension ViewController{
             calfTextEntity.transform.rotation = rotate
             imageDisplayAnchor2.addChild(calfTextEntity)
             
+            if(recording && allImagesDetected){
+                calfAnchorArr.append(imageAnchor)
+            }
             
-          
-      }
+            
+        }
         
 
-//        if(imageIndex==0){
-//            rightLabelX.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
-//            imageDisplayAnchor.position = simd_make_float3(imageAnchor.transform.columns.3)
-//            imageDisplayAnchor.orientation = Transform(matrix: imageAnchor.transform).rotation
-//            imageDisplayAnchor.addChild(planeEntity)
-////            imageDisplayAnchor.addChild(textEntity)
-//        }else if(imageIndex==1){
-//            rightLabelY.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
-//            imageDisplayAnchor2.position = simd_make_float3(imageAnchor.transform.columns.3)
-//            imageDisplayAnchor2.orientation = Transform(matrix: imageAnchor.transform).rotation
-//            imageDisplayAnchor2.addChild(planeEntity2)
-//        }else{
-//            rightLabelZ.displayMessage((imageAnchor.referenceImage.name ?? "") + imagePosition, duration: 1)
-//
-//        }
-        
-//        if(imageAnchor.referenceImage.name == "meiji1"){
-//
-//            imagePosArr[imagePosArr.count-1][0...2] = [imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z]
-//        }else if(imageAnchor.referenceImage.name == "meiji2"){
-//            imagePosArr[imagePosArr.count-1][3...5] = [imageAnchor.transform.columns.3.x, imageAnchor.transform.columns.3.y, imageAnchor.transform.columns.3.z]
-//        }
+  
     }
     
     func bodyTrackingProcess(bodyAnchor:ARBodyAnchor) -> Void {
