@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "meiji2.jpg",
+      "filename" : "thigh.jpg",
       "idiom" : "universal"
     }
   ],
@@ -11,6 +11,6 @@
   },
   "properties" : {
     "unit" : "centimeters",
-    "width" : 13
+    "width" : 17.09413504189256
   }
 }

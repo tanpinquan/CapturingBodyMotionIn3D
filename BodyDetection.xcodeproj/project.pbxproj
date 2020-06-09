@@ -50,6 +50,7 @@
 		302EBA90247F7F730012F026 /* AR Session 1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 1.mov"; sourceTree = "<group>"; };
 		302EBA91247F81250012F026 /* AR Session 2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 2.mov"; sourceTree = "<group>"; };
 		302EBA92247F88830012F026 /* AR Session 3.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session 3.mov"; sourceTree = "<group>"; };
+		30823D4A248F952A00BEE74B /* AR Session knee 2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session knee 2.mov"; sourceTree = "<group>"; };
 		30850C43248E051C00478393 /* AR Session knee 1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "AR Session knee 1.mov"; sourceTree = "<group>"; };
 		30850C44248E6B0500478393 /* ReplayLegViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayLegViewController.swift; sourceTree = "<group>"; };
 		308B91CC248B61FA00C570C8 /* ReplayBodyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayBodyViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +87,7 @@
 		2F60E1B122631DCF00357E98 = {
 			isa = PBXGroup;
 			children = (
+				30823D4A248F952A00BEE74B /* AR Session knee 2.mov */,
 				30850C43248E051C00478393 /* AR Session knee 1.mov */,
 				30B5E85924851C9400D3F700 /* AR Session 8.mov */,
 				30B5E85424851AE000D3F700 /* AR Session 7.mov */,

@@ -70,8 +70,7 @@ class ReplayBodyViewController: UIViewController, SCNSceneRendererDelegate {
     
     var currReplayIndex : Int = 0
     var updateTime:TimeInterval = 0
-    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time:
-        TimeInterval) {
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
 //        print("render: " + time.description + " " + updateTime.description + " " + currReplayIndex.description)
 
         
@@ -88,6 +87,7 @@ class ReplayBodyViewController: UIViewController, SCNSceneRendererDelegate {
         
 
     }
+    
     func createSkeleton(bodyAnchor: ARBodyAnchor, scene: SCNScene) -> Void {
         let jointModelTransforms = bodyAnchor.skeleton.jointModelTransforms
         for(jointIndex, jointName) in ARSkeletonDefinition.defaultBody3D.jointNames.enumerated(){

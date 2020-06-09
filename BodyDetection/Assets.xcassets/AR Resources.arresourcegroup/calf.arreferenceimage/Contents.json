@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "jats.jpg",
+      "filename" : "calf.jpg",
       "idiom" : "universal"
     }
   ],
@@ -11,6 +11,6 @@
   },
   "properties" : {
     "unit" : "centimeters",
-    "width" : 12.853904761904762
+    "width" : 17.899999999999999
   }
 }

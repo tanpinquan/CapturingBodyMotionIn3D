@@ -16,50 +16,81 @@ extension ViewController{
     func legTrackingProcess(thighAnchor:ARImageAnchor?, calfAnchor:ARImageAnchor?) -> Void {
         let rotateY = simd_quatf(angle: GLKMathDegreesToRadians(90), axis: SIMD3(x: 0, y: 1, z: 0))
         let rotateX = simd_quatf(angle: GLKMathDegreesToRadians(270), axis: SIMD3(x: 1, y: 0, z: 0))
-        let rotate = simd_mul(rotateY, rotateX)
+//        let rotate = simd_mul(rotateY, rotateX)
+//        let thighDirection: SIMD3<Float>?
+//        let calfDirection: SIMD3<Float>?
 
         let thighNode:SCNNode = SCNNode()
         let calfNode:SCNNode = SCNNode()
 
         if let thighAnchor = thighAnchor{
-             thighNode.transform = SCNMatrix4(thighAnchor.transform)
-             
-             leftLabelX.displayMessage("X: " + thighNode.position.x.description.prefix(5), duration: 1)
-             leftLabelY.displayMessage("Y: " + thighNode.position.y.description.prefix(5), duration: 1)
-             leftLabelZ.displayMessage("Z: " + thighNode.position.z.description.prefix(5), duration: 1)
-         
-             rightLabelX.displayMessage("Roll: " + radiansToDegrees(thighNode.eulerAngles.x).description.prefix(5), duration: 1)
-             rightLabelY.displayMessage("Pitch: " + radiansToDegrees(thighNode.eulerAngles.y).description.prefix(5), duration: 1)
-             rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(thighNode.eulerAngles.z).description.prefix(5), duration: 1)
-             
-             imageDisplayAnchor.position = simd_make_float3(thighAnchor.transform.columns.3)
-             imageDisplayAnchor.orientation = Transform(matrix: thighAnchor.transform).rotation
-             imageDisplayAnchor.addChild(planeEntity)
-    
-             thighTextEntity.transform.rotation = rotate
-             imageDisplayAnchor.addChild(thighTextEntity)
+            thighNode.transform = SCNMatrix4(thighAnchor.transform)
+
+            leftLabelX.displayMessage("X: " + thighNode.position.x.description.prefix(5), duration: 1)
+            leftLabelY.displayMessage("Y: " + thighNode.position.y.description.prefix(5), duration: 1)
+            leftLabelZ.displayMessage("Z: " + thighNode.position.z.description.prefix(5), duration: 1)
+
+ 
+            
+//            rightLabelX.displayMessage("Roll: " + radiansToDegrees(thighNode.eulerAngles.x).description.prefix(5), duration: 1)
+//            rightLabelY.displayMessage("Pitch: " + radiansToDegrees(thighNode.eulerAngles.y).description.prefix(5), duration: 1)
+//            rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(thighNode.eulerAngles.z).description.prefix(5), duration: 1)
+
+            imageDisplayAnchor.position = simd_make_float3(thighAnchor.transform.columns.3)
+            imageDisplayAnchor.orientation = Transform(matrix: thighAnchor.transform).rotation
+            imageDisplayAnchor.addChild(planeEntity)
+
+            thighTextEntity.transform.rotation = rotateX
+            imageDisplayAnchor.addChild(thighTextEntity)
+            
+            let directionFromKnee:SIMD3<Float> = SIMD3(x: -0.1, y: 0, z: 0)
+            boxEntity.position = directionFromKnee
+            imageDisplayAnchor.addChild(boxEntity)
+            
+            
+//            rightLabelX.displayMessage("X: " + thighDirection!.x.description.prefix(5), duration: 1)
+//            rightLabelY.displayMessage("Y: " + thighDirection!.y.description.prefix(5), duration: 1)
+//            rightLabelZ.displayMessage("Z: " + thighDirection!.z.description.prefix(5), duration: 1)
+            
+
+            
+            
         }
         if let calfAnchor = calfAnchor{
              calfNode.transform = SCNMatrix4(calfAnchor.transform)
  
-             leftLabelX.displayMessage("X: " + calfNode.position.x.description.prefix(5), duration: 1)
-             leftLabelY.displayMessage("Y: " + calfNode.position.y.description.prefix(5), duration: 1)
-             leftLabelZ.displayMessage("Z: " + calfNode.position.z.description.prefix(5), duration: 1)
+             rightLabelX.displayMessage("X: " + calfNode.position.x.description.prefix(5), duration: 1)
+             rightLabelY.displayMessage("Y: " + calfNode.position.y.description.prefix(5), duration: 1)
+             rightLabelZ.displayMessage("Z: " + calfNode.position.z.description.prefix(5), duration: 1)
+
+//             rightLabelX.displayMessage("Roll: " + radiansToDegrees(calfNode.eulerAngles.x).description.prefix(5), duration: 1)
+//             rightLabelY.displayMessage("Pitch: " + radiansToDegrees(calfNode.eulerAngles.y).description.prefix(5), duration: 1)
+//             rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(calfNode.eulerAngles.z).description.prefix(5), duration: 1)
  
-             rightLabelX.displayMessage("Roll: " + radiansToDegrees(calfNode.eulerAngles.x).description.prefix(5), duration: 1)
-             rightLabelY.displayMessage("Pitch: " + radiansToDegrees(calfNode.eulerAngles.y).description.prefix(5), duration: 1)
-             rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(calfNode.eulerAngles.z).description.prefix(5), duration: 1)
- 
-             imageDisplayAnchor2.position = simd_make_float3(calfAnchor.transform.columns.3)
-             imageDisplayAnchor2.orientation = Transform(matrix: calfAnchor.transform).rotation
-             imageDisplayAnchor2.addChild(planeEntity2)
- 
-             calfTextEntity.transform.rotation = rotate
-             imageDisplayAnchor2.addChild(calfTextEntity)
+            imageDisplayAnchor2.position = simd_make_float3(calfAnchor.transform.columns.3)
+            imageDisplayAnchor2.orientation = Transform(matrix: calfAnchor.transform).rotation
+            imageDisplayAnchor2.addChild(planeEntity2)
+
+            calfTextEntity.transform.rotation = rotateX
+            imageDisplayAnchor2.addChild(calfTextEntity)
+            
+            let directionFromKnee:SIMD3<Float> = SIMD3(x: 0.1, y: 0, z: 0)
+            boxEntity2.position = directionFromKnee
+            imageDisplayAnchor2.addChild(boxEntity2)
+
         }
         
-        if(recording){
-            if let thighAnchor = thighAnchor, let calfAnchor = calfAnchor{
+        if let thighAnchor = thighAnchor, let calfAnchor = calfAnchor{
+            let thighDirection = imageDisplayAnchor.convert(direction: SIMD3(x: -1, y: 0, z: 0), to: nil)
+            let calfDirection = imageDisplayAnchor2.convert(direction: SIMD3(x: 1, y: 0, z: 0), to: nil)
+
+            let kneeAngle = acos(simd_dot(thighDirection, calfDirection)/(simd_length(thighDirection)*simd_length(calfDirection))) * 180 / .pi
+            
+//            SIMD3(x: 1, y: 0, z: 0)
+            modeLabel.text = "knee angle: " + kneeAngle.description
+
+            if(recording){
+
                 let dataSample: [Float] = [thighNode.position.x, thighNode.position.y, thighNode.position.z,
                                            thighNode.eulerAngles.x, thighNode.eulerAngles.y, thighNode.eulerAngles.z,
                                            calfNode.position.x, calfNode.position.y, calfNode.position.z,

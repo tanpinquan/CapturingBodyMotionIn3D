@@ -43,8 +43,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
     let boxEntity = ModelEntity(mesh: MeshResource.generateBox(size: 0.03), materials: [SimpleMaterial(color: .green, isMetallic: true)])
     let boxEntity2 = ModelEntity(mesh: MeshResource.generateBox(size: 0.03), materials: [SimpleMaterial(color: .green, isMetallic: true)])
-    let planeEntity = ModelEntity(mesh: MeshResource.generatePlane(width: 0.1, depth: 0.2), materials: [UnlitMaterial(color: .red)])
-    let planeEntity2 = ModelEntity(mesh: MeshResource.generatePlane(width: 0.1, depth: 0.2), materials: [UnlitMaterial(color: .red)])
+    let planeEntity = ModelEntity(mesh: MeshResource.generatePlane(width: 0.15, depth: 0.08), materials: [UnlitMaterial(color: .red)])
+    let planeEntity2 = ModelEntity(mesh: MeshResource.generatePlane(width: 0.15, depth: 0.08), materials: [UnlitMaterial(color: .red)])
     let thighTextEntity = ModelEntity(mesh: MeshResource.generateText("Thigh",
                                                                  extrusionDepth: 0.01,
                                                                  font: .systemFont(ofSize: 0.03),
@@ -64,6 +64,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                                  )
     let imageDisplayAnchor = AnchorEntity()
     let imageDisplayAnchor2 = AnchorEntity()
+    
+    let testAnchor = AnchorEntity()
 
     // A tracked raycast which is used to place the character accurately
     // in the scene wherever the user taps.
@@ -308,9 +310,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
         for anchor in anchors {
             if let imageAnchor = anchor as? ARImageAnchor{
-                if (imageAnchor.referenceImage.name == "meiji2"){
+                if (imageAnchor.referenceImage.name == "thigh"){
                     thighAnchor = imageAnchor
-                }else if (imageAnchor.referenceImage.name == "jatz"){
+                }else if (imageAnchor.referenceImage.name == "calf"){
                     calfAnchor = imageAnchor
                 }
             }
