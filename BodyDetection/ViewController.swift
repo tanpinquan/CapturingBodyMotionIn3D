@@ -85,9 +85,10 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                                 7, 8, 9]
     
     var bodyAnchorArr: [ARBodyAnchor] = []
+    
+    var legPosArr: [[Float]] = []
     var thighAnchorArr: [ARImageAnchor] = []
     var calfAnchorArr: [ARImageAnchor] = []
-    var allImagesDetected: Bool = false;
 
     var recording: Bool = false
     var selectedExercise: Int = 0
@@ -276,17 +277,20 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
     
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
-        var imageIndex:Int = 0
-        imagePosArr.append(Array(repeating: 0, count: 6))
+//        var imageIndex:Int = 0
+        imagePosArr.append(Array(repeating: 0, count: 12))
         bodyPosArr.append(Array(repeating: 0, count: numRecordedJoints*6))
-        allImagesDetected = checkForBothImages(anchors: anchors)
+        let legAnchors = getLegAnchors(anchors: anchors)
+        
+        legTrackingProcess(thighAnchor: legAnchors.thighAnchor, calfAnchor: legAnchors.calfAnchor)
         
         for anchor in anchors {
             /// Processsing for image detection
-            if let imageAnchor = anchor as? ARImageAnchor {
-                imageTrackingProcess(imageAnchor: imageAnchor, imageIndex: imageIndex)
-                imageIndex += 1
-            }
+//            if let imageAnchor = anchor as? ARImageAnchor {
+//
+//                imageTrackingProcess(imageAnchor: imageAnchor, imageIndex: imageIndex)
+//                imageIndex += 1
+//            }
             
             /// Processing for body detection
             guard let bodyAnchor = anchor as? ARBodyAnchor else { continue }
@@ -297,22 +301,22 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
     }
     
-    func checkForBothImages(anchors: [ARAnchor]) -> Bool {
+    func getLegAnchors(anchors: [ARAnchor]) -> (thighAnchor: ARImageAnchor?, calfAnchor: ARImageAnchor?) {
         
-        var thighDetected: Bool = false
-        var calfDetected: Bool = false
-        
+        var thighAnchor: ARImageAnchor?
+        var calfAnchor: ARImageAnchor?
+
         for anchor in anchors {
             if let imageAnchor = anchor as? ARImageAnchor{
                 if (imageAnchor.referenceImage.name == "meiji2"){
-                    thighDetected = true
+                    thighAnchor = imageAnchor
                 }else if (imageAnchor.referenceImage.name == "jatz"){
-                    calfDetected = true
+                    calfAnchor = imageAnchor
                 }
             }
         }
         
-        return thighDetected && calfDetected
+        return (thighAnchor, calfAnchor)
     }
 
     
@@ -370,15 +374,18 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         print(recording)
         if(!recording){
             toggleRecordButton.setTitle("Start Recording", for: .normal)
-            createCSV()
+            createBodyCSV()
             if(trackingMode==0){
                 saveBodyRecording(anchorArr: bodyAnchorArr)
+                bodyAnchorArr = []
 
             }else if(trackingMode==1){
                 saveLegRecording(thighAnchors:thighAnchorArr, calfAnchors:calfAnchorArr)
+                calfAnchorArr = []
+                print("thigh:" + thighAnchorArr.count.description + "calf:" + calfAnchorArr.count.description)
+
             }
             
-            print("thigh:" + thighAnchorArr.count.description + "calf:" + calfAnchorArr.count.description)
             
         }else{
             toggleRecordButton.setTitle("Stop Recording", for: .normal)
@@ -391,7 +398,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         if(recording){
             recording = false
             toggleRecordButton.setTitle("Stop Recording", for: .normal)
-            createCSV()
+            createBodyCSV()
             saveBodyRecording(anchorArr: bodyAnchorArr)
         }
         performSegue(withIdentifier: "ChooseRecording", sender: nil)

@@ -56,7 +56,7 @@ extension ViewController{
     }
     
         /// CSV Export Function
-    func createCSV() -> Void {
+    func createBodyCSV() -> Void {
         let leftShoulderStr = "l_shoulder_x, l_shoulder_y, l_shoulder_z, l_shoulder_r, l_shoulder_p, l_shoupder_yaw, "
         let leftArmStr = "l_arm_x, l_arm_y, l_arm_z, l_arm_r, l_arm_p, l_arm_yaw, "
         let leftElbowStr = "l_elbow_x, l_elbow_y, l_elbow_z, l_elbow_r, l_elbow_p, l_elbow_yaw, "
@@ -79,14 +79,14 @@ extension ViewController{
         
     
 
-        let imageStr0 = "img0_x, img0_y, img0_z, "
-        let imageStr1 = "img1_x, img1_y, img1_z\n"
+        let imgThighStr = "img_thigh_x, img_thigh_y, img_thigh_z, img_thigh_r, img_thigh_p, img_thigh_yaw,"
+        let imgCalfStr = "img_calf_x, img_calf_y, img_calf_z, img_calf_r, img_calf_p, img_calf_y"
 
         var bodyCsvString = leftShoulderStr + leftArmStr + leftElbowStr + leftWristStr
         + rightShoulderStr + rightArmStr + rightElbowStr + rightWristStr
         + leftThighStr + leftKneeStr + leftAnkleStr
         + rightThighStr + rightKneeStr + rightAnkleStr
-        + imageStr0 + imageStr1
+        + imgThighStr + imgCalfStr + "\n"
         
         var numberInt = 0
 
