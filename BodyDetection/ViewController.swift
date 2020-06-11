@@ -45,8 +45,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     let boxEntity2 = ModelEntity(mesh: MeshResource.generateBox(size: 0.03), materials: [SimpleMaterial(color: .green, isMetallic: true)])
     let planeEntity = ModelEntity(mesh: MeshResource.generatePlane(width: 0.15, depth: 0.08), materials: [UnlitMaterial(color: .red)])
     let planeEntity2 = ModelEntity(mesh: MeshResource.generatePlane(width: 0.15, depth: 0.08), materials: [UnlitMaterial(color: .red)])
+    let hipPlaneEntity = ModelEntity(mesh: MeshResource.generatePlane(width: 0.15, depth: 0.08), materials: [UnlitMaterial(color: .red)])
     let thighTextEntity = ModelEntity(mesh: MeshResource.generateText("Thigh",
-                                                                 extrusionDepth: 0.01,
+                                                                 extrusionDepth: 0.002,
                                                                  font: .systemFont(ofSize: 0.03),
                                                                  containerFrame: CGRect.zero,
                                                                  alignment: .left,
@@ -55,16 +56,26 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                                  )
     
     let calfTextEntity = ModelEntity(mesh: MeshResource.generateText("Calf",
-                                                                 extrusionDepth: 0.01,
+                                                                 extrusionDepth: 0.002,
                                                                  font: .systemFont(ofSize: 0.03),
                                                                  containerFrame: CGRect.zero,
                                                                  alignment: .left,
                                                                  lineBreakMode: .byCharWrapping),
                                  materials:[UnlitMaterial(color: .yellow)]
                                  )
+    let floorTextEntity = ModelEntity(mesh: MeshResource.generateText("Floor",
+                                                                 extrusionDepth: 0.002,
+                                                                 font: .systemFont(ofSize: 0.03),
+                                                                 containerFrame: CGRect.zero,
+                                                                 alignment: .left,
+                                                                 lineBreakMode: .byCharWrapping),
+                                 materials:[UnlitMaterial(color: .yellow)]
+                                 )
+    
     let imageDisplayAnchor = AnchorEntity()
     let imageDisplayAnchor2 = AnchorEntity()
-    
+    let floorAnchor = AnchorEntity()
+
     let testAnchor = AnchorEntity()
 
     // A tracked raycast which is used to place the character accurately
@@ -91,6 +102,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     var legPosArr: [[Float]] = []
     var thighAnchorArr: [ARImageAnchor] = []
     var calfAnchorArr: [ARImageAnchor] = []
+    var floorAnchorArr: [ARImageAnchor] = []
 
     var recording: Bool = false
     var selectedExercise: Int = 0
@@ -121,7 +133,11 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         jointPicker.selectRow(18, inComponent: 2, animated: true)
 
         //resetImageTracking()
-        resetBodyTracking()
+        if(trackingMode==0){
+            resetBodyTracking()
+        }else{
+            resetImageTracking()
+        }
         refreshFiles()
 //        readFile()
         numRecordedJoints = jointIndexArr.count
@@ -137,12 +153,23 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         if #available(iOS 12.0, *) {
             let configuration = ARImageTrackingConfiguration()
             configuration.trackingImages = referenceImages
-            configuration.maximumNumberOfTrackedImages = 2
+            configuration.maximumNumberOfTrackedImages = 3
             configuration.isAutoFocusEnabled = true
         
             arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
             arView.scene.addAnchor(imageDisplayAnchor)
+            imageDisplayAnchor.addChild(planeEntity)
+            imageDisplayAnchor.addChild(thighTextEntity)
+            imageDisplayAnchor.addChild(boxEntity)
+
             arView.scene.addAnchor(imageDisplayAnchor2)
+            imageDisplayAnchor2.addChild(planeEntity2)
+            imageDisplayAnchor2.addChild(calfTextEntity)
+            imageDisplayAnchor2.addChild(boxEntity2)
+            
+            arView.scene.addAnchor(floorAnchor)
+            floorAnchor.addChild(hipPlaneEntity)
+            floorAnchor.addChild(floorTextEntity)
 
             
             jointPicker.isHidden = true
@@ -167,7 +194,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
         // Run a body tracking configration.
         let configuration = ARBodyTrackingConfiguration()
-        configuration.automaticSkeletonScaleEstimationEnabled = true
+//        configuration.automaticSkeletonScaleEstimationEnabled = true
 
 //        configuration.maximumNumberOfTrackedImages = 2
 //        configuration.detectionImages = referenceImages
@@ -175,10 +202,14 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         configuration.isAutoFocusEnabled = true
         arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         arView.scene.addAnchor(characterAnchor)
+        arView.scene.removeAnchor(imageDisplayAnchor)
+        arView.scene.removeAnchor(imageDisplayAnchor2)
+        print("------_Reset body-------")
+        print(arView.scene.anchors)
 //        arView.scene.addAnchor(characterReplayAnchor)
 
-        arView.scene.addAnchor(imageDisplayAnchor)
-        arView.scene.addAnchor(imageDisplayAnchor2)
+//        arView.scene.addAnchor(imageDisplayAnchor)
+//        arView.scene.addAnchor(imageDisplayAnchor2)
 
         
         // Asynchronously load the 3D character.
@@ -216,66 +247,30 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     }
     
     
-    func resetWorldTracking() {
-        
-        guard let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) else {
-            fatalError("Missing expected asset catalog resources.")
-        }
-        
-        if #available(iOS 12.0, *) {
-            let configuration = ARWorldTrackingConfiguration()
-            configuration.detectionImages = referenceImages
-            configuration.maximumNumberOfTrackedImages = 2
-            configuration.automaticImageScaleEstimationEnabled = true
-            arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
-            arView.scene.addAnchor(imageDisplayAnchor)
-            arView.scene.addAnchor(imageDisplayAnchor2)
-            
-            jointPicker.isHidden = true
-            print("Image tracking enabled")
-
-        } else {
-            // Fallback on earlier versions
-        }
-    }
+//    func resetWorldTracking() {
+//
+//        guard let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) else {
+//            fatalError("Missing expected asset catalog resources.")
+//        }
+//
+//        if #available(iOS 12.0, *) {
+//            let configuration = ARWorldTrackingConfiguration()
+//            configuration.detectionImages = referenceImages
+//            configuration.maximumNumberOfTrackedImages = 2
+//            configuration.automaticImageScaleEstimationEnabled = true
+//            arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+//            arView.scene.addAnchor(imageDisplayAnchor)
+//            arView.scene.addAnchor(imageDisplayAnchor2)
+//
+//            jointPicker.isHidden = true
+//            print("Image tracking enabled")
+//
+//        } else {
+//            // Fallback on earlier versions
+//        }
+//    }
     
-    func resetReplayConfiguration() {
-        guard ARBodyTrackingConfiguration.isSupported else {
-             fatalError("This feature is only supported on devices with an A12 chip")
-         }
-   
-        
-        if #available(iOS 12.0, *) {
-            let configuration = ARWorldTrackingConfiguration()
-    
-            arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
-            arView.scene.addAnchor(characterReplayAnchor)
-            
-            print("Replay tracking enabled")
 
-            
-            var cancellableReplay: AnyCancellable? = nil
-            cancellableReplay = Entity.loadBodyTrackedAsync(named: "character/robot_replay").sink(
-                receiveCompletion: { completion in
-                    if case let .failure(error) = completion {
-                        print("Error: Unable to load model: \(error.localizedDescription)")
-                    }
-                    cancellableReplay?.cancel()
-                }, receiveValue: { (character: Entity) in
-                    if let character = character as? BodyTrackedEntity {
-                        // Scale the character to human size
-                        character.scale = [0.25, 0.25, 0.25]
-                        self.replayCharacter = character
-                        cancellableReplay?.cancel()
-                    } else {
-                        print("Error: Unable to load model as BodyTrackedEntity")
-                    }
-                }
-            )
-        } else {
-            // Fallback on earlier versions
-        }
-    }
     
     
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
@@ -284,15 +279,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         bodyPosArr.append(Array(repeating: 0, count: numRecordedJoints*6))
         let legAnchors = getLegAnchors(anchors: anchors)
         
-        legTrackingProcess(thighAnchor: legAnchors.thighAnchor, calfAnchor: legAnchors.calfAnchor)
+        legTrackingProcess(thighImageAnchor: legAnchors.thighAnchor, calfImageAnchor: legAnchors.calfAnchor, floorImageAnchor: legAnchors.floorAnchor)
         
         for anchor in anchors {
-            /// Processsing for image detection
-//            if let imageAnchor = anchor as? ARImageAnchor {
-//
-//                imageTrackingProcess(imageAnchor: imageAnchor, imageIndex: imageIndex)
-//                imageIndex += 1
-//            }
             
             /// Processing for body detection
             guard let bodyAnchor = anchor as? ARBodyAnchor else { continue }
@@ -303,10 +292,11 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
     }
     
-    func getLegAnchors(anchors: [ARAnchor]) -> (thighAnchor: ARImageAnchor?, calfAnchor: ARImageAnchor?) {
+    func getLegAnchors(anchors: [ARAnchor]) -> (thighAnchor: ARImageAnchor?, calfAnchor: ARImageAnchor?, floorAnchor: ARImageAnchor?) {
         
         var thighAnchor: ARImageAnchor?
         var calfAnchor: ARImageAnchor?
+        var floorAnchor: ARImageAnchor?
 
         for anchor in anchors {
             if let imageAnchor = anchor as? ARImageAnchor{
@@ -314,11 +304,13 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                     thighAnchor = imageAnchor
                 }else if (imageAnchor.referenceImage.name == "calf"){
                     calfAnchor = imageAnchor
+                }else if (imageAnchor.referenceImage.name == "floor"){
+                    floorAnchor = imageAnchor
                 }
             }
         }
         
-        return (thighAnchor, calfAnchor)
+        return (thighAnchor, calfAnchor, floorAnchor)
     }
 
     

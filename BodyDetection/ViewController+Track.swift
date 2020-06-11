@@ -13,7 +13,7 @@ import ARKit
 extension ViewController{
     
     
-    func legTrackingProcess(thighAnchor:ARImageAnchor?, calfAnchor:ARImageAnchor?) -> Void {
+    func legTrackingProcess(thighImageAnchor:ARImageAnchor?, calfImageAnchor:ARImageAnchor?, floorImageAnchor:ARImageAnchor?) -> Void {
         let rotateY = simd_quatf(angle: GLKMathDegreesToRadians(90), axis: SIMD3(x: 0, y: 1, z: 0))
         let rotateX = simd_quatf(angle: GLKMathDegreesToRadians(270), axis: SIMD3(x: 1, y: 0, z: 0))
 //        let rotate = simd_mul(rotateY, rotateX)
@@ -22,8 +22,9 @@ extension ViewController{
 
         let thighNode:SCNNode = SCNNode()
         let calfNode:SCNNode = SCNNode()
+        let floorNode:SCNNode = SCNNode()
 
-        if let thighAnchor = thighAnchor{
+        if let thighAnchor = thighImageAnchor{
             thighNode.transform = SCNMatrix4(thighAnchor.transform)
 
             leftLabelX.displayMessage("X: " + thighNode.position.x.description.prefix(5), duration: 1)
@@ -31,56 +32,51 @@ extension ViewController{
             leftLabelZ.displayMessage("Z: " + thighNode.position.z.description.prefix(5), duration: 1)
 
  
-            
-//            rightLabelX.displayMessage("Roll: " + radiansToDegrees(thighNode.eulerAngles.x).description.prefix(5), duration: 1)
-//            rightLabelY.displayMessage("Pitch: " + radiansToDegrees(thighNode.eulerAngles.y).description.prefix(5), duration: 1)
-//            rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(thighNode.eulerAngles.z).description.prefix(5), duration: 1)
-
             imageDisplayAnchor.position = simd_make_float3(thighAnchor.transform.columns.3)
             imageDisplayAnchor.orientation = Transform(matrix: thighAnchor.transform).rotation
-            imageDisplayAnchor.addChild(planeEntity)
 
             thighTextEntity.transform.rotation = rotateX
-            imageDisplayAnchor.addChild(thighTextEntity)
-            
+            thighTextEntity.position = SIMD3(x: -0.03, y: 0.01, z: 0.02)
+
             let directionFromKnee:SIMD3<Float> = SIMD3(x: -0.1, y: 0, z: 0)
             boxEntity.position = directionFromKnee
-            imageDisplayAnchor.addChild(boxEntity)
-            
-            
-//            rightLabelX.displayMessage("X: " + thighDirection!.x.description.prefix(5), duration: 1)
-//            rightLabelY.displayMessage("Y: " + thighDirection!.y.description.prefix(5), duration: 1)
-//            rightLabelZ.displayMessage("Z: " + thighDirection!.z.description.prefix(5), duration: 1)
-            
-
-            
+       
+               
             
         }
-        if let calfAnchor = calfAnchor{
+        if let calfAnchor = calfImageAnchor{
              calfNode.transform = SCNMatrix4(calfAnchor.transform)
  
              rightLabelX.displayMessage("X: " + calfNode.position.x.description.prefix(5), duration: 1)
              rightLabelY.displayMessage("Y: " + calfNode.position.y.description.prefix(5), duration: 1)
              rightLabelZ.displayMessage("Z: " + calfNode.position.z.description.prefix(5), duration: 1)
 
-//             rightLabelX.displayMessage("Roll: " + radiansToDegrees(calfNode.eulerAngles.x).description.prefix(5), duration: 1)
-//             rightLabelY.displayMessage("Pitch: " + radiansToDegrees(calfNode.eulerAngles.y).description.prefix(5), duration: 1)
-//             rightLabelZ.displayMessage("Yaw: " + radiansToDegrees(calfNode.eulerAngles.z).description.prefix(5), duration: 1)
  
             imageDisplayAnchor2.position = simd_make_float3(calfAnchor.transform.columns.3)
             imageDisplayAnchor2.orientation = Transform(matrix: calfAnchor.transform).rotation
-            imageDisplayAnchor2.addChild(planeEntity2)
 
             calfTextEntity.transform.rotation = rotateX
-            imageDisplayAnchor2.addChild(calfTextEntity)
-            
+            calfTextEntity.position = SIMD3(x: -0.03, y: 0.01, z: 0.02)
+
             let directionFromKnee:SIMD3<Float> = SIMD3(x: 0.1, y: 0, z: 0)
             boxEntity2.position = directionFromKnee
-            imageDisplayAnchor2.addChild(boxEntity2)
+
+        }
+        if let floorImageAnchor = floorImageAnchor{
+            floorNode.transform = SCNMatrix4(floorImageAnchor.transform)
+
+
+            floorAnchor.position = simd_make_float3(floorImageAnchor.transform.columns.3)
+            floorAnchor.orientation = Transform(matrix: floorImageAnchor.transform).rotation
+            floorTextEntity.transform.rotation = rotateX
+            floorTextEntity.position = SIMD3(x: -0.02, y: 0.01, z: 0.02)
+            
+//            print(floorImageAnchor.transform.columns.3.y)
+
 
         }
         
-        if let thighAnchor = thighAnchor, let calfAnchor = calfAnchor{
+        if let thighAnchor = thighImageAnchor, let calfAnchor = calfImageAnchor{
             let thighDirection = imageDisplayAnchor.convert(direction: SIMD3(x: -1, y: 0, z: 0), to: nil)
             let calfDirection = imageDisplayAnchor2.convert(direction: SIMD3(x: 1, y: 0, z: 0), to: nil)
 

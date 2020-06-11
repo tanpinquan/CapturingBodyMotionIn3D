@@ -17,6 +17,12 @@
       "filename" : "fatburger.arreferenceimage"
     },
     {
+      "filename" : "floor.arreferenceimage"
+    },
+    {
+      "filename" : "hip.arreferenceimage"
+    },
+    {
       "filename" : "iphone-4.7.arreferenceimage"
     },
     {
@@ -60,9 +66,6 @@
     },
     {
       "filename" : "wrist.arreferenceimage"
-    },
-    {
-      "filename" : "zurich.arreferenceimage"
     }
   ]
 }

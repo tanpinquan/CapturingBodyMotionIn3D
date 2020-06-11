@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "zurich.jpg",
+      "filename" : "hip.jpg",
       "idiom" : "universal"
     }
   ],
@@ -11,6 +11,6 @@
   },
   "properties" : {
     "unit" : "centimeters",
-    "width" : 9.2132183908045988
+    "width" : 12.300000000000001
   }
 }

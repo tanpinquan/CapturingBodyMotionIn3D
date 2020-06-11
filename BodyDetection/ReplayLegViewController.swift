@@ -35,7 +35,7 @@ class ReplayLegViewController: UIViewController, SCNSceneRendererDelegate {
         scene.rootNode.addChildNode(cameraNode)
 
         // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 5)
+        cameraNode.position = SCNVector3(x: 0, y: 0.25, z: 5)
 
         // create and add a light to the scene
         let lightNode = SCNNode()
@@ -58,7 +58,7 @@ class ReplayLegViewController: UIViewController, SCNSceneRendererDelegate {
         plane.firstMaterial?.diffuse.contents = UIColor.lightGray
         
         let planeNode = SCNNode(geometry: plane)
-        planeNode.position = SCNVector3(0,legRecording.thighAnchors[0].transform.columns.3.y-0.5,legRecording.thighAnchors[0].transform.columns.3.z)
+        planeNode.position = SCNVector3(0,legRecording.thighAnchors[0].transform.columns.3.y-0.15,legRecording.thighAnchors[0].transform.columns.3.z)
         planeNode.eulerAngles = SCNVector3Make(-.pi/2, 0, 0)
         scene.rootNode.addChildNode(planeNode)
         
@@ -96,28 +96,50 @@ class ReplayLegViewController: UIViewController, SCNSceneRendererDelegate {
     
     func createLeg(thighAnchor: ARImageAnchor, calfAnchor: ARImageAnchor, scene: SCNScene) -> Void {
         let jointLength = simd_float3(x: 0.1, y: 0, z: 0)
-        
+        let rotateY = simd_quatf(angle: GLKMathDegreesToRadians(90), axis: SIMD3(x: 0, y: 0, z: 1))
+
 //        let thighStart = SCNVector3(simd_make_float3(thighAnchor.transform.columns.3)-jointLength)
 //        let thighEnd = SCNVector3(simd_make_float3(thighAnchor.transform.columns.3)+jointLength)
 //        let thighNode = lineBetweenNodes(positionA: thighStart, positionB: thighEnd, inScene: scene)
-        
-        let thighNode = SCNNode(geometry: SCNBox(width: 0.3, height: 0.1, length: 0.1, chamferRadius: 0.01))
+        let trackingCylinder = SCNCylinder(radius: 0.01, height: 0.2)
+        trackingCylinder.firstMaterial?.diffuse.contents = UIColor.green
+
+        let thighNode = SCNNode(geometry: trackingCylinder)
         thighNode.position = SCNVector3(simd_make_float3(thighAnchor.transform.columns.3))
         thighNode.transform = SCNMatrix4(thighAnchor.transform)
         thighNode.name = "thigh"
+//        let thighBox = SCNNode(geometry: SCNBox(width: 0.5, height: 0.1, length: 0.1, chamferRadius: 0.01))
+//        thighBox.position = SCNVector3(-0.15, 0, 0)
+//        thighNode.addChildNode(thighBox)
         scene.rootNode.addChildNode(thighNode)
+
+        let thighCylinder = SCNNode(geometry: SCNCylinder(radius: 0.05, height: 0.5))
+        thighCylinder.position = SCNVector3(-0.15, 0, 0)
+        thighCylinder.simdOrientation = rotateY
+        thighNode.addChildNode(thighCylinder)
+
         
-        let calfNode = SCNNode(geometry: SCNBox(width: 0.3, height: 0.1, length: 0.1, chamferRadius: 0.01))
+        let calfNode = SCNNode(geometry: trackingCylinder)
         calfNode.position = SCNVector3(simd_make_float3(calfAnchor.transform.columns.3))
         calfNode.transform = SCNMatrix4(thighAnchor.transform)
         calfNode.name = "calf"
-        scene.rootNode.addChildNode(calfNode)
+        
+//        let calfBox = SCNNode(geometry: SCNBox(width: 0.3, height: 0.1, length: 0.1, chamferRadius: 0.01))
+//        calfBox.position = SCNVector3(0.0, 0, 0)
+//        calfNode.addChildNode(calfBox)
+//        scene.rootNode.addChildNode(calfNode)
+
+        let calfCylinder = SCNNode(geometry: SCNCylinder(radius: 0.05, height: 0.3))
+        calfCylinder.position = SCNVector3(-0.0, 0, 0)
+        calfCylinder.simdOrientation = rotateY
+        calfNode.addChildNode(calfCylinder)
+        
         
 //        let calfStart = SCNVector3(simd_make_float3(calfAnchor.transform.columns.3)-jointLength)
 //        let calfEnd = SCNVector3(simd_make_float3(calfAnchor.transform.columns.3)+jointLength)
 //        let calfNode = lineBetweenNodes(positionA: calfStart, positionB: calfEnd, inScene: scene)
 //        calfNode.name = "calf"
-//        scene.rootNode.addChildNode(calfNode)
+        scene.rootNode.addChildNode(calfNode)
 
         
     }
