@@ -105,7 +105,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     var floorAnchorArr: [ARImageAnchor] = []
 
     var recording: Bool = false
-    var selectedExercise: Int = 0
+//    var selectedExercise: Int = 0
     var selectedAngle: Float = 0
     
     var latestPreditcion: String = ""
@@ -124,13 +124,13 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         self.navigationController?.navigationBar.isHidden = true
 
         pickerData = [ARSkeletonDefinition.defaultBody3D.jointNames,
-                      ["Knee","Shoulder"],
+//                      ["Knee","Shoulder"],
                       angleArr.map(String.init)
         ]
         
         arView.session.delegate = self
         jointPicker.selectRow(19, inComponent: 0, animated: true)
-        jointPicker.selectRow(18, inComponent: 2, animated: true)
+        jointPicker.selectRow(18, inComponent: 1, animated: true)
 
         //resetImageTracking()
         if(trackingMode==0){
@@ -316,7 +316,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     
     // Picker functions
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 3
+        return 2
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -331,9 +331,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         switch component {
         case 0:
             leftPosIndex = row
+//        case 1:
+//            selectedExercise = row
         case 1:
-            selectedExercise = row
-        case 2:
             selectedAngle = Float(row*10-180)
             print("angle" + selectedAngle.description)
         default:
@@ -591,7 +591,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                 if averageElbowAngle < 140 {
                     labelText = labelText + ", STRAIGHTEN ELBOW"
                 }
-                predLabel.backgroundColor = .green
+                predLabel.backgroundColor = .systemGreen
             }else if(predictedActivity.starts(with: "shoulder_right")){
                 let averageElbowAngle = rElbowAngle.reduce(0,+) / Float(ModelConstants.predictionWindowSize)
                 labelText = predictedActivity + ", Elbow Angle: " + averageElbowAngle.description.prefix(3)

@@ -110,7 +110,7 @@ extension ViewController{
             }catch{}
             
 
-            let fileName = pickerData[1][selectedExercise] + "Data" + String(numberInt) + ".csv"
+            let fileName = "Data" + String(numberInt) + ".csv"
             
             let fileURL = dir.appendingPathComponent(fileName)
 
