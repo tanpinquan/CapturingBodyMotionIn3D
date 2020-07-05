@@ -25,7 +25,7 @@ extension ViewController{
                     fileStr += URL.lastPathComponent + ","
 
                 })
-                fileLabels.text = fileStr
+//                fileLabels.text = fileStr
 
              }catch{
                  

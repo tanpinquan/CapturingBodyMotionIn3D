@@ -189,9 +189,9 @@ extension ViewController{
         let selectedJointModelTransform = jointModelTransforms[leftPosIndex]
 
         let estimatedHeight = bodyAnchor.estimatedScaleFactor * 1.8
-        let labelString = "Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor.description + ", Height: " + estimatedHeight.description
+//        let labelString = "Tracked joints: " + trackedJoints.description + ", Scale: " + bodyAnchor.estimatedScaleFactor.description + ", Height: " + estimatedHeight.description
 
-        jointsLabel.displayMessage(labelString, duration: 1)
+//        jointsLabel.displayMessage(labelString, duration: 1)
 
         let selectedJointLocalNode = SCNNode()
         let selectedJointModelNode = SCNNode()
@@ -239,11 +239,15 @@ extension ViewController{
             endJointPos: simd_make_float3(jointModelTransforms[65].columns.3)
             ) * 180 / .pi * Float(rightAngleSign)
         
-        if(latestPreditcion.starts(with: "shoulder_left")){
-            modeLabel.text = "L Shoulder: " + lShoulderAngle.description.prefix(4) + "\t L Elbow: " + lElbowAngle.description.prefix(3)
-        }else if(latestPreditcion.starts(with: "shoulder_right")){
-            modeLabel.text = "R Shoulder: " + rShoulderAngle.description.prefix(4) + "\t R Elbow: " + rElbowAngle.description.prefix(3)
-        }
+//        if(latestPreditcion.starts(with: "shoulder_left")){
+//            jointsLabel.text = "L Shoulder: " + lShoulderAngle.description.prefix(4) + "\t L Elbow: " + lElbowAngle.description.prefix(3)
+//        }else if(latestPreditcion.starts(with: "shoulder_right")){
+//            modeLabel.text = "R Shoulder: " + rShoulderAngle.description.prefix(4) + "\t R Elbow: " + rElbowAngle.description.prefix(3)
+//        }
+        jointsLabel.text = "L Shoulder: " + lShoulderAngle.description.prefix(4) + "\t L Elbow: " + lElbowAngle.description.prefix(3)
+        modeLabel.text = "R Shoulder: " + rShoulderAngle.description.prefix(4) + "\t R Elbow: " + rElbowAngle.description.prefix(3)
+
+//        jointsLabel.displayMessage(labelString, duration: 1)
 
 
         

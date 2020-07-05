@@ -68,5 +68,56 @@ class SelectRecordingViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    @IBAction func uploadButtonPressed(_ sender: UIBarButtonItem) {
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            print(dir)
+            
+            do{
+                let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
+                print(fileURLs)
+
+                let activity = UIActivityViewController(activityItems: fileURLs, applicationActivities: nil)
+                if let popoverController = activity.popoverPresentationController {
+                    popoverController.sourceRect = CGRect(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2, width: 0, height: 0)
+                    popoverController.sourceView = self.view
+                    popoverController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+                }
+                present(activity, animated: true)
+            }catch{
+                
+            }
+        }
+    }
+    
+    
+    @IBAction func deleteButtonPressed(_ sender: UIBarButtonItem) {
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            print(dir)
+            
+            do{
+                let fileURLs = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
+                print(fileURLs)
+                fileURLs.forEach({URL in
+                    print(URL.absoluteString.suffix(5))
+
+                    do{
+                        try FileManager.default.removeItem(at: URL)
+                    }
+                    catch{}
+                })
+
+            }catch{}
+        }
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        
+        UserDefaults.standard.synchronize()
+        
+        recordingInfo = getRecordingKeys()
+        
+        tableView.reloadData()
+
+    }
+    
 
 }

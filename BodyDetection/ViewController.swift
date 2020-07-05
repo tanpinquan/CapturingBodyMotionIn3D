@@ -368,6 +368,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         print(recording)
         if(!recording){
             toggleRecordButton.setTitle("Start Recording", for: .normal)
+            toggleRecordButton.backgroundColor = .white
+            toggleRecordButton.tintColor = self.view.tintColor
+
             createBodyCSV()
             if(trackingMode==0){
                 saveBodyRecording(anchorArr: bodyAnchorArr)
@@ -383,6 +386,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
             
         }else{
             toggleRecordButton.setTitle("Stop Recording", for: .normal)
+            toggleRecordButton.backgroundColor = .systemRed
+            toggleRecordButton.tintColor = .white
             
         }
     }
@@ -501,6 +506,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
     var lElbowAngle:[Float] = Array(repeating: 0.0, count: ModelConstants.predictionWindowSize)
     var rElbowAngle:[Float] = Array(repeating: 0.0, count: ModelConstants.predictionWindowSize)
+    var lShoulderAngle:[Float] = Array(repeating: 0.0, count: ModelConstants.predictionWindowSize)
+    var rShoulderAngle:[Float] = Array(repeating: 0.0, count: ModelConstants.predictionWindowSize)
 //    var inputArr: [MLMultiArray] = Array(repeating: try! MLMultiArray(shape: [ModelConstants.predictionWindowSize] as [NSNumber], dataType: MLMultiArrayDataType.double), count: ModelConstants.numFeatures)
     
     var stateOutput = try! MLMultiArray(shape:[ModelConstants.stateInLength as NSNumber], dataType: MLMultiArrayDataType.double)
@@ -567,8 +574,8 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         
         lElbowAngle[currentIndexInPredictionWindow] = jointAngleSample[0]
         rElbowAngle[currentIndexInPredictionWindow] = jointAngleSample[1]
-        
-           
+        lShoulderAngle[currentIndexInPredictionWindow] = jointAngleSample[2]
+        rShoulderAngle[currentIndexInPredictionWindow] = jointAngleSample[3]
            
        // Update the index in the prediction window data array
        currentIndexInPredictionWindow += 1
@@ -587,17 +594,25 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
             if(predictedActivity.starts(with: "shoulder_left")){
                 let averageElbowAngle = lElbowAngle.reduce(0,+) / Float(ModelConstants.predictionWindowSize)
-                labelText = predictedActivity + ", Elbow Angle: " + averageElbowAngle.description.prefix(3)
-                if averageElbowAngle < 140 {
-                    labelText = labelText + ", STRAIGHTEN ELBOW"
-                }
+                let maxShoulderAngle = lShoulderAngle.max() ?? 0
+
+                labelText = predictedActivity
+                    + ", Elbow Angle: " + averageElbowAngle.description.prefix(6)
+                    + ",\t Shoulder Angle: " + maxShoulderAngle.description.prefix(6)
+//                if averageElbowAngle < 140 {
+//                    labelText = labelText + ", STRAIGHTEN ELBOW"
+//                }
                 predLabel.backgroundColor = .systemGreen
             }else if(predictedActivity.starts(with: "shoulder_right")){
                 let averageElbowAngle = rElbowAngle.reduce(0,+) / Float(ModelConstants.predictionWindowSize)
-                labelText = predictedActivity + ", Elbow Angle: " + averageElbowAngle.description.prefix(3)
-                if averageElbowAngle < 140 {
-                    labelText = labelText + ", STRAIGHTEN ELBOW"
-                }
+                let maxShoulderAngle = lShoulderAngle.max() ?? 0
+
+                labelText = predictedActivity
+                    + ", Elbow Angle: " + averageElbowAngle.description.prefix(6)
+                    + ",\t Shoulder Angle: " + maxShoulderAngle.description.prefix(6)
+//                if averageElbowAngle < 140 {
+//                    labelText = labelText + ", STRAIGHTEN ELBOW"
+//                }
                 predLabel.backgroundColor = .blue
             }else if(predictedActivity=="standing"){
                 labelText = predictedActivity
