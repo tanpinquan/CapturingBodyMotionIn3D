@@ -109,6 +109,7 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
     var selectedAngle: Float = 0
     
     var latestPreditcion: String = ""
+    var prevMaxAngle:Float = 0.0
     
     
     override func viewDidAppear(_ animated: Bool) {
@@ -585,16 +586,21 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
         if (currentIndexInPredictionWindow == ModelConstants.predictionWindowSize) {
 //            print(rArmR.description)
            if let predictedActivity = performModelPrediction() {
-            latestPreditcion = predictedActivity
             
                // Use the predicted activity here
+            if(latestPreditcion != predictedActivity){
+                prevMaxAngle = 0
+            }
   
             print(predictedActivity)
             var labelText:String = ""
-
+            var maxShoulderAngle:Float = 0
             if(predictedActivity.starts(with: "shoulder_left")){
                 let averageElbowAngle = lElbowAngle.reduce(0,+) / Float(ModelConstants.predictionWindowSize)
-                let maxShoulderAngle = lShoulderAngle.max() ?? 0
+                maxShoulderAngle = lShoulderAngle.max() ?? 0
+                if(prevMaxAngle > maxShoulderAngle){
+                    maxShoulderAngle = prevMaxAngle
+                }
 
                 labelText = predictedActivity
                     + ", Elbow Angle: " + averageElbowAngle.description.prefix(6)
@@ -605,8 +611,10 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
                 predLabel.backgroundColor = .systemGreen
             }else if(predictedActivity.starts(with: "shoulder_right")){
                 let averageElbowAngle = rElbowAngle.reduce(0,+) / Float(ModelConstants.predictionWindowSize)
-                let maxShoulderAngle = lShoulderAngle.max() ?? 0
-
+                maxShoulderAngle = rShoulderAngle.max() ?? 0
+                if(prevMaxAngle > maxShoulderAngle){
+                   maxShoulderAngle = prevMaxAngle
+                }
                 labelText = predictedActivity
                     + ", Elbow Angle: " + averageElbowAngle.description.prefix(6)
                     + ",\t Shoulder Angle: " + maxShoulderAngle.description.prefix(6)
@@ -623,6 +631,9 @@ class ViewController: UIViewController, ARSessionDelegate, UIPickerViewDelegate,
 
             // Start a new prediction window
             currentIndexInPredictionWindow = 0
+            latestPreditcion = predictedActivity
+            prevMaxAngle = maxShoulderAngle
+
            }
        }
    }

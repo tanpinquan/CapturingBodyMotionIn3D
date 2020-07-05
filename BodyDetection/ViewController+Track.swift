@@ -228,16 +228,23 @@ extension ViewController{
         }
 
         
-        let lShoulderAngle = computeJointAngle(
+        var lShoulderAngle = computeJointAngle(
             startJointPos: simd_make_float3(jointModelTransforms[19].columns.3),
             middleJointPos: simd_make_float3(jointModelTransforms[20].columns.3),
             endJointPos: simd_make_float3(jointModelTransforms[21].columns.3)
-            ) * 180 / .pi * Float(leftAngleSign)
-        let rShoulderAngle = computeJointAngle(
+            ) * 180 / .pi - 90
+        var rShoulderAngle = computeJointAngle(
             startJointPos: simd_make_float3(jointModelTransforms[63].columns.3),
             middleJointPos: simd_make_float3(jointModelTransforms[64].columns.3),
             endJointPos: simd_make_float3(jointModelTransforms[65].columns.3)
-            ) * 180 / .pi * Float(rightAngleSign)
+            ) * 180 / .pi - 90
+        
+        if(leftAngleSign == 1){
+            lShoulderAngle = 180 - lShoulderAngle
+            }
+        if(rightAngleSign == 1){
+            rShoulderAngle = 180 - rShoulderAngle
+        }
         
 //        if(latestPreditcion.starts(with: "shoulder_left")){
 //            jointsLabel.text = "L Shoulder: " + lShoulderAngle.description.prefix(4) + "\t L Elbow: " + lElbowAngle.description.prefix(3)
